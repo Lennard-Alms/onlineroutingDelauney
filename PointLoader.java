@@ -7,16 +7,16 @@ public class PointLoader {
 
     public String fileText = null;
 
-    public PointLoader(String filename){
+    public PointLoader(File file){
         try{
-            this.fileText = readWholeFile(filename);
+            this.fileText = readWholeFile(file);
         } catch(Exception e){
             System.out.println("ERROR");
         }
     }
 
-    public String readWholeFile(String file) throws FileNotFoundException {
-        String entireFileText = new Scanner(new File(file))
+    public String readWholeFile(File file) throws FileNotFoundException {
+        String entireFileText = new Scanner(file)
             .useDelimiter("\\A").next();
         return (entireFileText);
     }

@@ -7,11 +7,22 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.event.EventHandler;
+import javafx.event.ActionEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Rectangle;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javafx.scene.control.Button;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
+import java.io.*;
+import javafx.scene.control.Button;
+
+
+
+import javafx.stage.FileChooser;
+
 
 public class MainGui extends Application {
 
@@ -22,22 +33,48 @@ public class MainGui extends Application {
   }
 
   public void start(Stage stage){
-    Group root = new Group();
+    VBox verticalBox = new VBox();
+    HBox horizontalBox = new HBox();
+    Group coordinateRoot = new Group();
     Group triLayer = new Group();
     Group nodeLayer = new Group();
-    Scene scene = new Scene(root, 800, 600);
+    Scene scene = new Scene(verticalBox, 800, 627);
     stage.setTitle("Onlinerouting");
-    setupCoordinate(nodeLayer, triLayer, stage);
-    PointLoader loader = new PointLoader("graphwritetest.txt");
-    nodeSet = loader.getNodes();
-    drawTriangulation(triLayer);
+    setupCoordinateSystem(nodeLayer, triLayer);
+    addButtons(horizontalBox, triLayer, nodeLayer, stage);
     stage.setScene(scene);
-    root.getChildren().add(triLayer);
-    root.getChildren().add(nodeLayer);
+    coordinateRoot.getChildren().add(triLayer);
+    coordinateRoot.getChildren().add(nodeLayer);
+    verticalBox.getChildren().add(coordinateRoot);
+    verticalBox.getChildren().add(horizontalBox);
     stage.show();
   }
 
-  public void setupCoordinate(Group nodeLayer, Group triLayer, Stage stage){ // creates transparent rectangle that handels the click event
+  public void addButtons(HBox box, Group triLayer, Group nodeLayer, Stage stage){
+    Button btn = new Button("Choose file...");
+    btn.setOnAction(new EventHandler<ActionEvent>() {
+      public void handle(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        File file = fileChooser.showOpenDialog(stage);
+        if (file != null) {
+          loadFile(file, triLayer, nodeLayer);
+        }
+      }
+    });
+    box.getChildren().add(btn);
+  }
+
+  public void loadFile(File file, Group triLayer, Group nodeLayer){
+    PointLoader loader = new PointLoader(file);
+    nodeLayer.getChildren().clear();
+    nodeSet.clear();
+    setupCoordinateSystem(nodeLayer, triLayer);
+    for(Vector2D node : loader.getNodes()){
+      addPoint(node.x, node.y, nodeLayer, triLayer);
+    }
+  }
+
+  public void setupCoordinateSystem(Group nodeLayer, Group triLayer){ // creates transparent rectangle that handels the click event
     Rectangle r = new Rectangle();
     r.setX(0);
     r.setY(0);
@@ -52,7 +89,7 @@ public class MainGui extends Application {
     nodeLayer.getChildren().add(r);
   }
 
-  public void addPoint(double x, double y, Group group, Group triLayer) { //Creates new node
+  public void addPoint(double x, double y, Group nodeLayer, Group triLayer) { //Creates new node
     Circle node = new Circle();
     node.setCenterX(x);
     node.setCenterY(y);
@@ -71,7 +108,7 @@ public class MainGui extends Application {
         }
       }
     });
-    group.getChildren().add(node); // add node
+    nodeLayer.getChildren().add(node); // add node
     drawTriangulation(triLayer); // update the triangulation
   }
 
@@ -100,7 +137,9 @@ public class MainGui extends Application {
 
 
 
+/*
 
+ */
 
 
 
