@@ -15,31 +15,29 @@ import java.util.List;
 
 public class MainGui extends Application {
 
-  public List<Vector2D> pointSet = new ArrayList<>();
+  public List<Vector2D> nodeSet = new ArrayList<>();
 
   public static void main(String[] args) {
     launch(args);
   }
 
-
-
   public void start(Stage stage){
     Group root = new Group();
     Group triLayer = new Group();
-    Group pointLayer = new Group();
+    Group nodeLayer = new Group();
     Scene scene = new Scene(root, 800, 600);
     stage.setTitle("Onlinerouting");
-    setupCoordinate(pointLayer, triLayer, stage);
+    setupCoordinate(nodeLayer, triLayer, stage);
+    PointLoader loader = new PointLoader("graphwritetest.txt");
+    nodeSet = loader.getNodes();
+    drawTriangulation(triLayer);
     stage.setScene(scene);
     root.getChildren().add(triLayer);
-    root.getChildren().add(pointLayer);
+    root.getChildren().add(nodeLayer);
     stage.show();
   }
 
-
-
-
-  public void setupCoordinate(Group pointLayer, Group triLayer, Stage stage){ // creates transparent rectangle that handels the click event
+  public void setupCoordinate(Group nodeLayer, Group triLayer, Stage stage){ // creates transparent rectangle that handels the click event
     Rectangle r = new Rectangle();
     r.setX(0);
     r.setY(0);
@@ -48,40 +46,37 @@ public class MainGui extends Application {
     r.setFill(Color.color(0,0,0,0));
     r.setOnMousePressed(new EventHandler<MouseEvent>() {
       public void handle(MouseEvent event) {
-        addPoint(event.getX(), event.getY(), pointLayer, triLayer);
+        addPoint(event.getX(), event.getY(), nodeLayer, triLayer);
       }
     });
-    pointLayer.getChildren().add(r);
+    nodeLayer.getChildren().add(r);
   }
 
-
-  public void addPoint(double x, double y, Group group, Group triLayer) { //Creates new point
-    Circle point = new Circle();
-    point.setCenterX(x);
-    point.setCenterY(y);
-    point.setRadius(4.0);
-    pointSet.add(new Vector2D(x,y)); // add to the point list
-    int position = pointSet.size() - 1;  // remember wich point it is
-    point.setOnMouseDragged(new EventHandler<MouseEvent>() { // Handle drag
+  public void addPoint(double x, double y, Group group, Group triLayer) { //Creates new node
+    Circle node = new Circle();
+    node.setCenterX(x);
+    node.setCenterY(y);
+    node.setRadius(4.0);
+    nodeSet.add(new Vector2D(x,y)); // add to the node list
+    int position = nodeSet.size() - 1;  // remember wich node it is
+    node.setOnMouseDragged(new EventHandler<MouseEvent>() { // Handle drag
       public void handle(MouseEvent event) {
-        double deltaX = Math.abs(point.getCenterX() - event.getSceneX());
-        double deltaY = Math.abs(point.getCenterY() - event.getSceneY());
+        double deltaX = Math.abs(node.getCenterX() - event.getSceneX());
+        double deltaY = Math.abs(node.getCenterY() - event.getSceneY());
         if(deltaX + deltaY > 1){
-          point.setCenterX(event.getSceneX());
-          point.setCenterY(event.getSceneY());
-          pointSet.set(position, new Vector2D(event.getSceneX(), event.getSceneY())); // update the right point in the point List
+          node.setCenterX(event.getSceneX());
+          node.setCenterY(event.getSceneY());
+          nodeSet.set(position, new Vector2D(event.getSceneX(), event.getSceneY())); // update the right node in the node List
           drawTriangulation(triLayer); // update the triangulation
         }
       }
     });
-    group.getChildren().add(point); // add point
+    group.getChildren().add(node); // add node
     drawTriangulation(triLayer); // update the triangulation
   }
 
-
-
   public void drawTriangulation(Group group){
-    DelaunayTriangulator triangulator = new DelaunayTriangulator(pointSet);
+    DelaunayTriangulator triangulator = new DelaunayTriangulator(nodeSet);
     try {
       triangulator.triangulate();
     } catch (NotEnoughPointsException e1) {
@@ -101,7 +96,6 @@ public class MainGui extends Application {
       group.getChildren().add(polygon);
     }
   }
-
 }
 
 
