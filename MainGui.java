@@ -13,12 +13,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
-
-
-
-
-
 public class MainGui extends Application {
 
   public List<Vector2D> pointSet = new ArrayList<>();
@@ -53,11 +47,13 @@ public class MainGui extends Application {
     r.setHeight(600);
     r.setFill(Color.color(0,0,0,0));
     r.setOnMousePressed(new EventHandler<MouseEvent>() {
-        public void handle(MouseEvent event) {
-          addPoint(event.getX(), event.getY(), pointLayer, triLayer);
-        }
+      public void handle(MouseEvent event) {
+        addPoint(event.getX(), event.getY(), pointLayer, triLayer);
+      }
+    });
     pointLayer.getChildren().add(r);
   }
+
 
   public void addPoint(double x, double y, Group group, Group triLayer) { //Creates new point
     Circle point = new Circle();
