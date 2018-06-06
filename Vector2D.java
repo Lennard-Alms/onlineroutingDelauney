@@ -89,7 +89,7 @@ public class Vector2D {
 
     @Override
     public String toString() {
-        return "Vector2D[" + x + ", " + y + "]";
+        return "[" + x + ", " + y + "]";
     }
 
 }

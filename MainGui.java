@@ -18,7 +18,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import java.io.*;
 import javafx.scene.control.Button;
-
+import java.util.Hashtable;
 
 
 import javafx.stage.FileChooser;
@@ -94,8 +94,13 @@ public class MainGui extends Application {
     node.setCenterX(x);
     node.setCenterY(y);
     node.setRadius(4.0);
+    int position = nodeSet.size();  // remember wich node it is
     nodeSet.add(new Vector2D(x,y)); // add to the node list
-    int position = nodeSet.size() - 1;  // remember wich node it is
+    if(position == 0){
+      node.setFill(Color.LAWNGREEN);
+    } else if (position == 1){
+      node.setFill(Color.RED);
+    }
     node.setOnMouseDragged(new EventHandler<MouseEvent>() { // Handle drag
       public void handle(MouseEvent event) {
         double deltaX = Math.abs(node.getCenterX() - event.getSceneX());
@@ -116,30 +121,53 @@ public class MainGui extends Application {
     DelaunayTriangulator triangulator = new DelaunayTriangulator(nodeSet);
     try {
       triangulator.triangulate();
+      group.getChildren().clear();
+      List<Triangle2D> triangles = triangulator.getTriangles();
+      for (int i = 0; i < triangles.size(); i++) {
+        Triangle2D triangle = triangles.get(i);
+        Polygon polygon = new Polygon();
+        polygon.getPoints().addAll(new Double[]{
+            triangle.a.x, triangle.a.y,
+            triangle.b.x, triangle.b.y,
+            triangle.c.x, triangle.c.y });
+        polygon.setFill(Color.color(0.9,0.9,0.9));
+        polygon.setStroke(Color.BLACK);
+        polygon.setStrokeWidth(1);
+        group.getChildren().add(polygon);
+      }
+      Graph G = setupGraph(triangles);
+      List<Vector2D> path = G.greedyRoutingPath();
+      for(int i = 0; i < path.size() - 1; i++){
+        Line line = new Line(path.get(i).x, path.get(i).y, path.get(i+1).x, path.get(i+1).y);
+        line.setStroke(Color.RED);
+        group.getChildren().add(line);
+      }
     } catch (NotEnoughPointsException e1) {
-      System.out.println("NotEnoughPointsException");
+      // nothing
     }
-    group.getChildren().clear();
-    for (int i = 0; i < triangulator.getTriangles().size(); i++) {
-      Triangle2D triangle = triangulator.getTriangles().get(i);
-      Polygon polygon = new Polygon();
-      polygon.getPoints().addAll(new Double[]{
-          triangle.a.x, triangle.a.y,
-          triangle.b.x, triangle.b.y,
-          triangle.c.x, triangle.c.y });
-      polygon.setFill(Color.LIGHTSLATEGRAY);
-      polygon.setStroke(Color.BLACK);
-      polygon.setStrokeWidth(1);
-      group.getChildren().add(polygon);
+  }
+
+  public Graph setupGraph(List<Triangle2D> triangles){
+    Hashtable<String, Integer> m = new Hashtable<>();
+    Graph G = new Graph();
+    for(int i = 0; i < nodeSet.size(); i++){
+      m.put(nodeSet.get(i).toString(), i);
+      G.addVertex(nodeSet.get(i));
     }
+    for(Triangle2D tri : triangles){
+      G.addEdge(m.get("[" + tri.a.x + ", " + tri.a.y + "]"),m.get("[" + tri.b.x + ", " + tri.b.y + "]"));
+      G.addEdge(m.get("[" + tri.a.x + ", " + tri.a.y + "]"),m.get("[" + tri.c.x + ", " + tri.c.y + "]"));
+      G.addEdge(m.get("[" + tri.c.x + ", " + tri.c.y + "]"),m.get("[" + tri.b.x + ", " + tri.b.y + "]"));
+    }
+    return G;
   }
 }
 
 
 
-/*
 
- */
+
+
 
 
 
