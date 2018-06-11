@@ -1,22 +1,13 @@
 import java.util.Hashtable;
+import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.PriorityQueue;
 
-/**
- * 2D vector class implementation.
- *
- * @author Johannes Diemke
- */
 public class Graph {
 
     public Hashtable<Integer, Vertex> V = new Hashtable<>();
 
-    /**
-     * Constructor of the Graph class used to create new Graph instances.
-     *
-     * @param vertices
-     *            List of vertices that contains Objects of class Vertex
-     */
     public Graph() {
 
     }
@@ -50,6 +41,40 @@ public class Graph {
         return path;
     }
 
+    public List<Vector2D> optimalRoutingPath(){
+        V.get(0).l = 0;
+        PriorityQueue<Vertex> q = new PriorityQueue<>(11, new VertexComperator());
+        q.add(V.get(0));
+        HashSet<Vertex> R = new HashSet<>(V.values());
+        Hashtable<Vertex, Vertex> p = new Hashtable<>();
+        while(R.size() > 0){
+            Vertex v = 	q.poll();
+            while(!R.contains(v)){
+                v = q.poll();
+            }
+            R.remove(v);
+            for(Vertex w : v.neighbours.values()){
+                if(R.contains(w)){
+                    if(w.l > v.l + v.getDistance(w)){
+                        w.l = v.l + v.getDistance(w);
+                        q.add(w);
+                        p.remove(w);
+                        p.put(w, v);
+                    }
+                }
+            }
+        }
+        List<Vector2D> path = new ArrayList<>();
+        Vertex v = V.get(1);
+        path.add(v.vector);
+        while(!v.equals(V.get(0))){
+            Vertex next = p.get(v);
+            path.add(next.vector);
+            v = next;
+        }
+        return path;
+
+    }
 
     @Override
     public String toString() {

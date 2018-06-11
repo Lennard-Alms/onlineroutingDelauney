@@ -1,22 +1,10 @@
 import java.util.Hashtable;
 
-/**
- * 2D vector class implementation.
- *
- * @author Johannes Diemke
- */
 public class Vertex {
 
     public Hashtable<Integer, Vertex> neighbours = new Hashtable<>();
     public Vector2D vector = null;
-
-
-    /**
-     * Constructor of the 2D vector class used to create new vector instances.
-     *
-     * @param neighbours
-     *            Set of neighbours contains objects of class Vertex
-     */
+    public double l = Double.POSITIVE_INFINITY;
 
     public Vertex(Vector2D v) {
 
