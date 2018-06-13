@@ -20,6 +20,7 @@ import java.io.*;
 import java.util.Hashtable;
 import javafx.stage.FileChooser;
 import javafx.scene.text.*;
+import java.text.DecimalFormat;
 
 
 public class MainGui extends Application {
@@ -134,22 +135,29 @@ public class MainGui extends Application {
       }
     }
     if(G.V.size() > 1){
-      drawRoutingPath(G.laubentahlschesRouting(), Color.RED, 3);
-      drawRoutingPath(G.optimalRoutingPath(), Color.LAWNGREEN, 2);
-      drawRoutingPath(G.greedyRoutingPath(), Color.AQUA, 1);
+      informationBox.getChildren().clear();
+      drawRoutingPath(G.optimalRoutingPath(), Color.LAWNGREEN, 2, "Djiks");
+      drawRoutingPath(G.laubentahlschesRouting(), Color.RED, 3, "LAUB");
+      drawRoutingPath(G.greedyRoutingPath(), Color.AQUA, 1, "Greed");
     }
   }
 
-  public void drawRoutingPath(List<Vertex> path, Color c, int width){
+  public void drawRoutingPath(List<Vertex> path, Color c, int width, String name){
     double dist = 0;
     for(int i = 0; i < path.size() - 1; i++){
-
+      dist += path.get(i).distance(path.get(i+1));
       Line line = new Line(path.get(i).x, path.get(i).y, path.get(i+1).x, path.get(i+1).y);
       line.setStroke(c);
       line.setStrokeWidth(width);
       edgeLayer.getChildren().add(line);
     }
-    // Text informationText = new Text("  hallo");
+    Text algoName = new Text(name);
+    algoName.setStroke(c);
+    DecimalFormat decimalFormat = new DecimalFormat("#.000");
+    String ratio = decimalFormat.format(dist / G.vList.get(0).distance(G.vList.get(1)));
+    Text euclidRatio = new Text("Euclid: " + ratio);
+    informationBox.getChildren().add(algoName);
+    informationBox.getChildren().add(euclidRatio);
   }
 
 }
