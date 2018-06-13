@@ -32,6 +32,8 @@ public class Graph {
                 addEdge(tri.b, tri.c);
                 addEdge(tri.a, tri.c);
             }
+        } else if(V.size() == 2){
+            addEdge(vList.get(0), vList.get(1));
         }
     }
 
@@ -54,7 +56,6 @@ public class Graph {
         Vertex current = vList.get(0);
         path.add(current);
         while(!current.equals(vList.get(1))){
-            System.out.println("(" + current.x + "," + current.y + ")");
             HashSet<Vertex> candidates = new HashSet<>();
             for(Vertex v : current.neighbours) {
                 if(current.distance(vList.get(1)) > v.distance(vList.get(1))) {
@@ -90,15 +91,15 @@ public class Graph {
         }
         return path;
     }
- /*
+
     public List<Vertex> greedyRoutingPath(){
-        Vertex current = V.get(0);
+        Vertex current = vList.get(0);
         List<Vertex> path = new ArrayList<>();
         path.add(current);
         Vertex best = current;
-        while(!current.equals(V.get(1))){
+        while(!current.equals(vList.get(1))){
             for(Vertex v : current.neighbours){
-                if(best.distance(V.get(1)) > v.distance(V.get(1))){
+                if(best.distance(vList.get(1)) > v.distance(vList.get(1))){
                     best = v;
                 }
             }
@@ -109,10 +110,13 @@ public class Graph {
     }
 
     public List<Vertex> optimalRoutingPath(){
-        V.get(0).l = 0;
+        for(Vertex v : V){
+            v.l = Double.POSITIVE_INFINITY;
+        }
+        vList.get(0).l = 0;
         PriorityQueue<Vertex> q = new PriorityQueue<>(11, new VertexComperator());
-        q.add(V.get(0));
-        HashSet<Vertex> R = new HashSet<>(V.values());
+        q.add(vList.get(0));
+        HashSet<Vertex> R = new HashSet<>(V);
         Hashtable<Vertex, Vertex> p = new Hashtable<>();
         while(R.size() > 0){
             Vertex v = 	q.poll();
@@ -120,7 +124,7 @@ public class Graph {
                 v = q.poll();
             }
             R.remove(v);
-            for(Vertex w : v.neighbours.values()){
+            for(Vertex w : v.neighbours){
                 if(R.contains(w)){
                     if(w.l > v.l + v.distance(w)){
                         w.l = v.l + v.distance(w);
@@ -132,16 +136,16 @@ public class Graph {
             }
         }
         List<Vertex> path = new ArrayList<>();
-        Vertex v = V.get(1);
+        Vertex v = vList.get(1);
         path.add(0, v);
-        while(!v.equals(V.get(0))){
+        while(!v.equals(vList.get(0))){
             Vertex next = p.get(v);
             path.add(next);
             v = next;
         }
         return path;
     }
-*/
+
     @Override
     public String toString() {
         return "Vertices[" + V + "]";

@@ -131,57 +131,23 @@ public class MainGui extends Application {
         edgeLayer.getChildren().add(new Line(v.x, v.y, w.x, w.y));
       }
     }
-    if(G.V.size() > 2){
-      drawRoutingPath(G.laubentahlschesRouting());
+    if(G.V.size() > 1){
+      drawRoutingPath(G.laubentahlschesRouting(), Color.RED, 3);
+      drawRoutingPath(G.optimalRoutingPath(), Color.LAWNGREEN, 2);
+      drawRoutingPath(G.greedyRoutingPath(), Color.AQUA, 1);
     }
   }
 
 
-  public void drawRoutingPath(List<Vertex> path){
+  public void drawRoutingPath(List<Vertex> path, Color c, int width){
     for(int i = 0; i < path.size() - 1; i++){
       Line line = new Line(path.get(i).x, path.get(i).y, path.get(i+1).x, path.get(i+1).y);
-      line.setStroke(Color.RED);
-      line.setStrokeWidth(2);
+      line.setStroke(c);
+      line.setStrokeWidth(width);
       edgeLayer.getChildren().add(line);
     }
   }
-
-
-/*
-  public void drawRoutingPath(List<Triangle2D> triangles){ // TODO: distances and ratios from the routing in the textfield. also the routingpath sould return a list of verticies not vectors.
-    Graph G = setupGraph(triangles);
-    List<Vector2D> path = G.greedyRoutingPath();
-    List<Vector2D> pathOpt = G.optimalRoutingPath();
-    double greedyDist = 0.0;
-
-
-    }
-    double optimalDist = 0.0;
-    for(int i = 0; i < pathOpt.size() - 1; i++){
-      Line line = new Line(pathOpt.get(i).x, pathOpt.get(i).y, pathOpt.get(i+1).x, pathOpt.get(i+1).y);
-      line.setStroke(Color.LAWNGREEN);
-      triLayer.getChildren().add(line);
-    }
-    double eucidianDist = G.V.get(0).getDistance(G.V.get(1));
-    informationText.setText("  " + )
-  }
-
-  public Graph setupGraph(List<Triangle2D> triangles){
-    Hashtable<String, Integer> m = new Hashtable<>();
-    Graph G = new Graph();
-    for(int i = 0; i < nodeSet.size(); i++){
-      m.put(nodeSet.get(i).toString(), i);
-      G.addVertex(nodeSet.get(i));
-    }
-    for(Triangle2D tri : triangles){
-      G.addEdge(m.get("[" + tri.a.x + ", " + tri.a.y + "]"),m.get("[" + tri.b.x + ", " + tri.b.y + "]"));
-      G.addEdge(m.get("[" + tri.a.x + ", " + tri.a.y + "]"),m.get("[" + tri.c.x + ", " + tri.c.y + "]"));
-      G.addEdge(m.get("[" + tri.c.x + ", " + tri.c.y + "]"),m.get("[" + tri.b.x + ", " + tri.b.y + "]"));
-    }
-    return G;
-  }
-
-  */
+  
 }
 
 

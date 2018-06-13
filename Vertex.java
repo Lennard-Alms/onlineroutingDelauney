@@ -5,7 +5,7 @@ public class Vertex {
     public HashSet<Vertex> neighbours = new HashSet<>();
     public double x;
     public double y;
-    public double l = Double.POSITIVE_INFINITY;
+    public double l;
 
     public Vertex(double x, double y) {
         this.x = x;
