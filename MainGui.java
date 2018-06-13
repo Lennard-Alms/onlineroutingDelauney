@@ -43,7 +43,6 @@ public class MainGui extends Application {
     setupNodeLayer();
     addButtons(stage);
     stage.setScene(scene);
-    horizontalBox.getChildren().add(informationText);
     coordinateSystem.getChildren().add(edgeLayer);
     coordinateSystem.getChildren().add(nodeLayer);
     verticalBox.getChildren().add(coordinateSystem);
@@ -144,7 +143,7 @@ public class MainGui extends Application {
   public void drawRoutingPath(List<Vertex> path, Color c, int width){
     double dist = 0;
     for(int i = 0; i < path.size() - 1; i++){
-      
+
       Line line = new Line(path.get(i).x, path.get(i).y, path.get(i+1).x, path.get(i+1).y);
       line.setStroke(c);
       line.setStrokeWidth(width);
