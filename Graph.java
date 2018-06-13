@@ -53,7 +53,10 @@ public class Graph {
         List<Vertex> path = new ArrayList<>();
         Vertex current = vList.get(0);
         path.add(current);
-        while(!current.equals(vList.get(1))){
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        while(!current.equals(vList.get(1))) {
             System.out.println("(" + current.x + "," + current.y + ")");
             HashSet<Vertex> candidates = new HashSet<>();
             for(Vertex v : current.neighbours) {
@@ -64,26 +67,36 @@ public class Graph {
             Vertex bestDist = current;
             Vertex longestEdge = current;
             for(Vertex v : candidates) {
-                if(v.distance(vList.get(1)) > bestDist.distance(vList.get(1))) {
+                if(v.distance(vList.get(1)) < bestDist.distance(vList.get(1))) {
                     bestDist = v;
+                    System.out.println("Distance: " + v.distance(vList.get(1)));
                 }
                 if(current.distance(v) > current.distance(longestEdge)) {
+                    System.out.println("Longest Edge: " + current.distance(v));
                     longestEdge = v;
                 }
             }
             Vertex best = current;
-            double bestRatio = 0;
-            double distNorm;
-            double edgeNorm;
-            double routingRatio;
-            for(Vertex v : candidates) {
-                distNorm = bestDist.distance(vList.get(1)) / v.distance(vList.get(1));
-                edgeNorm = current.distance(v) / current.distance(longestEdge);
-                routingRatio = distNorm / (edgeNorm);
-                if(routingRatio > bestRatio) {
-                    best = v;
-                    bestRatio = routingRatio;
+            if(bestDist.distance(vList.get(1)) != 0) {
+                double bestRatio = -1;
+                double distNorm;
+                double edgeNorm;
+                double routingRatio;
+                for(Vertex v : candidates) {
+                    
+                    distNorm = bestDist.distance(vList.get(1)) / v.distance(vList.get(1));
+                    System.out.println("Distnorm");
+                    System.out.println(bestDist.distance(vList.get(1)) + " / " + v.distance(vList.get(1)) + " = " + distNorm);
+                    edgeNorm = current.distance(v) / current.distance(longestEdge);
+                    routingRatio = distNorm / (edgeNorm);
+                    System.out.println(distNorm + " / " + edgeNorm + " = " + routingRatio);
+                    if(routingRatio > bestRatio && bestRatio != 0) {
+                        best = v;
+                        bestRatio = routingRatio;
+                    }
                 }
+            } else {
+              best = bestDist;
             }
             current = best;
             path.add(current);
