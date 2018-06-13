@@ -95,9 +95,8 @@ public class Graph {
                     double dot = v_.dot(t_);
                     double v_length = v_.distance(new Vertex(.0,.0));
                     double t_length = t_.distance(new Vertex(.0,.0));
-                    double angle = (dot / (v_length * t_length));
-                                        
-                    routingRatio = distNorm / Math.sqrt(edgeNorm) * (angle);
+                    double angle = (dot / (v_length * t_length)) / 90;
+                    routingRatio = (distNorm) / (edgeNorm) * (1 - angle);
                     
                     System.out.println(distNorm + " / " + edgeNorm + " = " + routingRatio);
                     if(routingRatio > bestRatio && bestRatio != 0) {
