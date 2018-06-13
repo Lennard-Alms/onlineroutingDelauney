@@ -25,13 +25,14 @@ import javafx.scene.text.*;
 public class MainGui extends Application {
 
   public Graph G = new Graph();
+  HBox rootBox = new HBox();
   VBox verticalBox = new VBox();
   HBox horizontalBox = new HBox();
   Group coordinateSystem = new Group();
   Group nodeLayer = new Group();
   Group edgeLayer = new Group();
-  Text informationText = new Text("  hallo");
-  Scene scene = new Scene(verticalBox, 800, 627);
+  VBox informationBox = new VBox();
+  Scene scene = new Scene(rootBox, 900, 627);
 
   public static void main(String[] args) {
     launch(args);
@@ -47,6 +48,8 @@ public class MainGui extends Application {
     coordinateSystem.getChildren().add(nodeLayer);
     verticalBox.getChildren().add(coordinateSystem);
     verticalBox.getChildren().add(horizontalBox);
+    rootBox.getChildren().add(verticalBox);
+    rootBox.getChildren().add(informationBox);
     stage.show();
   }
 
@@ -138,16 +141,18 @@ public class MainGui extends Application {
     }
   }
 
-
   public void drawRoutingPath(List<Vertex> path, Color c, int width){
+    double dist = 0;
     for(int i = 0; i < path.size() - 1; i++){
+      
       Line line = new Line(path.get(i).x, path.get(i).y, path.get(i+1).x, path.get(i+1).y);
       line.setStroke(c);
       line.setStrokeWidth(width);
       edgeLayer.getChildren().add(line);
     }
+    // Text informationText = new Text("  hallo");
   }
-  
+
 }
 
 
