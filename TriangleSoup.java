@@ -57,7 +57,7 @@ class TriangleSoup {
      * @return Returns the triangle from this triangle soup that contains the
      *         specified point or null
      */
-    public Triangle2D findContainingTriangle(Vector2D point) {
+    public Triangle2D findContainingTriangle(Vertex point) {
         for (Triangle2D triangle : triangleSoup) {
             if (triangle.contains(point)) {
                 return triangle;
@@ -113,7 +113,7 @@ class TriangleSoup {
      *            The point
      * @return The edge from the triangle soup nearest to the specified point
      */
-    public Edge2D findNearestEdge(Vector2D point) {
+    public Edge2D findNearestEdge(Vertex point) {
         List<EdgeDistancePack> edgeList = new ArrayList<EdgeDistancePack>();
 
         for (Triangle2D triangle : triangleSoup) {
@@ -134,7 +134,7 @@ class TriangleSoup {
      * @param vertex
      *            The vertex
      */
-    public void removeTrianglesUsing(Vector2D vertex) {
+    public void removeTrianglesUsing(Vertex vertex) {
         List<Triangle2D> trianglesToBeRemoved = new ArrayList<Triangle2D>();
 
         for (Triangle2D triangle : triangleSoup) {

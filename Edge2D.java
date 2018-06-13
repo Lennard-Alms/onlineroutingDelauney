@@ -5,8 +5,8 @@
  */
 public class Edge2D {
 
-    public Vector2D a;
-    public Vector2D b;
+    public Vertex a;
+    public Vertex b;
 
     /**
      * Constructor of the 2D edge class used to create a new edge instance from
@@ -17,7 +17,7 @@ public class Edge2D {
      * @param b
      *            The second vertex of the edge
      */
-    public Edge2D(Vector2D a, Vector2D b) {
+    public Edge2D(Vertex a, Vertex b) {
         this.a = a;
         this.b = b;
     }
