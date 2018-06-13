@@ -3,6 +3,7 @@ import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.lang.Math;
 
 public class Graph {
 
@@ -55,7 +56,12 @@ public class Graph {
         List<Vertex> path = new ArrayList<>();
         Vertex current = vList.get(0);
         path.add(current);
-        while(!current.equals(vList.get(1))){
+        
+        System.out.println("-----------------------");
+        
+        int epoche = 0;
+        while(!current.equals(vList.get(1))) {
+          System.out.println("Iteration: " + epoche);
             HashSet<Vertex> candidates = new HashSet<>();
             for(Vertex v : current.neighbours) {
                 if(current.distance(vList.get(1)) > v.distance(vList.get(1))) {
@@ -65,7 +71,7 @@ public class Graph {
             Vertex bestDist = current;
             Vertex longestEdge = current;
             for(Vertex v : candidates) {
-                if(v.distance(vList.get(1)) > bestDist.distance(vList.get(1))) {
+                if(v.distance(vList.get(1)) < bestDist.distance(vList.get(1))) {
                     bestDist = v;
                 }
                 if(current.distance(v) > current.distance(longestEdge)) {
@@ -73,21 +79,39 @@ public class Graph {
                 }
             }
             Vertex best = current;
-            double bestRatio = 0;
-            double distNorm;
-            double edgeNorm;
-            double routingRatio;
-            for(Vertex v : candidates) {
-                distNorm = bestDist.distance(vList.get(1)) / v.distance(vList.get(1));
-                edgeNorm = current.distance(v) / current.distance(longestEdge);
-                routingRatio = distNorm / (edgeNorm);
-                if(routingRatio > bestRatio) {
-                    best = v;
-                    bestRatio = routingRatio;
+            if(bestDist.distance(vList.get(1)) != 0) {
+                double bestRatio = -1;
+                double distNorm;
+                double edgeNorm;
+                double routingRatio;
+                
+                for(Vertex v : candidates) {    
+                    distNorm = bestDist.distance(vList.get(1)) / v.distance(vList.get(1));
+                    edgeNorm = current.distance(v) / current.distance(longestEdge);
+                    
+                    Vertex v_ = v.sub(vList.get(0));
+                    Vertex t_ = vList.get(1).sub(vList.get(0));
+                    
+                    double dot = v_.dot(t_);
+                    double v_length = v_.distance(new Vertex(.0,.0));
+                    double t_length = t_.distance(new Vertex(.0,.0));
+                    double angle = (dot / (v_length * t_length));
+                                        
+                    routingRatio = distNorm / Math.sqrt(edgeNorm) * (angle);
+                    
+                    System.out.println(distNorm + " / " + edgeNorm + " = " + routingRatio);
+                    if(routingRatio > bestRatio && bestRatio != 0) {
+                        best = v;
+                        bestRatio = routingRatio;
+                    }
                 }
+            } else {
+              best = bestDist;
             }
             current = best;
             path.add(current);
+            System.out.println("");
+            epoche++;
         }
         return path;
     }
@@ -138,7 +162,7 @@ public class Graph {
         List<Vertex> path = new ArrayList<>();
         Vertex v = vList.get(1);
         path.add(0, v);
-        while(!v.equals(vList.get(0))){
+        while(!v.equals(vList.get(0))) {
             Vertex next = p.get(v);
             path.add(next);
             v = next;
