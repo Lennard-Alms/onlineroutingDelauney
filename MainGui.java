@@ -17,9 +17,9 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import java.io.*;
-import javafx.scene.control.Button;
 import java.util.Hashtable;
 import javafx.stage.FileChooser;
+import javafx.scene.text.*;
 
 
 public class MainGui extends Application {
@@ -30,6 +30,7 @@ public class MainGui extends Application {
   Group coordinateRoot = new Group();
   Group triLayer = new Group();
   Group nodeLayer = new Group();
+  Text informationText = new Text("  hallo");
   Scene scene = new Scene(verticalBox, 800, 627);
 
   public static void main(String[] args) {
@@ -43,6 +44,7 @@ public class MainGui extends Application {
     stage.setScene(scene);
     coordinateRoot.getChildren().add(triLayer);
     coordinateRoot.getChildren().add(nodeLayer);
+    horizontalBox.getChildren().add(informationText);
     verticalBox.getChildren().add(coordinateRoot);
     verticalBox.getChildren().add(horizontalBox);
     stage.show();
@@ -154,21 +156,26 @@ public class MainGui extends Application {
     }
   }
 
-  public void drawRoutingPath(List<Triangle2D> triangles){
+  public void drawRoutingPath(List<Triangle2D> triangles){ // TODO: distances and ratios from the routing in the textfield. also the routingpath sould return a list of verticies not vectors.
     Graph G = setupGraph(triangles);
     List<Vector2D> path = G.greedyRoutingPath();
     List<Vector2D> pathOpt = G.optimalRoutingPath();
+    double greedyDist = 0.0;
     for(int i = 0; i < path.size() - 1; i++){
       Line line = new Line(path.get(i).x, path.get(i).y, path.get(i+1).x, path.get(i+1).y);
       line.setStroke(Color.RED);
       line.setStrokeWidth(2);
       triLayer.getChildren().add(line);
+
     }
+    double optimalDist = 0.0;
     for(int i = 0; i < pathOpt.size() - 1; i++){
       Line line = new Line(pathOpt.get(i).x, pathOpt.get(i).y, pathOpt.get(i+1).x, pathOpt.get(i+1).y);
       line.setStroke(Color.LAWNGREEN);
       triLayer.getChildren().add(line);
     }
+    double eucidianDist = G.V.get(0).getDistance(G.V.get(1));
+    informationText.setText("  " + )
   }
 
   public Graph setupGraph(List<Triangle2D> triangles){
