@@ -89,20 +89,29 @@ public class Graph {
                     distNorm = bestDist.distance(vList.get(1)) / v.distance(vList.get(1));
                     edgeNorm = current.distance(v) / current.distance(longestEdge);
                     
-                    Vertex v_ = v.sub(vList.get(0));
-                    Vertex t_ = vList.get(1).sub(vList.get(0));
+                    Vertex v_ = v.sub(current);
+                    Vertex t_ = vList.get(1).sub(current);
                     
                     double dot = v_.dot(t_);
                     double v_length = v_.distance(new Vertex(.0,.0));
                     double t_length = t_.distance(new Vertex(.0,.0));
-                    double angle = (dot / (v_length * t_length)) / 90;
-                    routingRatio = (distNorm) / (edgeNorm) * (1 - angle);
+                    double angle = (dot / (v_length * t_length));
+                    angle = Math.toDegrees(Math.acos(angle)) / 90;
                     
+                    
+                    routingRatio = ((distNorm) / (edgeNorm)) / (Math.pow(angle, 3));
+                    // routingRatio = ( angle);
+                    // System.out.println(angle);
                     System.out.println(distNorm + " / " + edgeNorm + " = " + routingRatio);
                     if(routingRatio > bestRatio && bestRatio != 0) {
                         best = v;
                         bestRatio = routingRatio;
                     }
+                    
+                    // if(Math.abs(1 - routingRatio) < bestRatio && bestRatio != 0) {
+                    // 
+                    // }
+                    
                 }
             } else {
               best = bestDist;
