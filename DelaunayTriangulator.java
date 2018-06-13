@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class DelaunayTriangulator {
 
-    private List<Vector2D> pointSet;
+    private List<Vertex> pointSet;
     private TriangleSoup triangleSoup;
 
     /**
@@ -21,7 +21,7 @@ public class DelaunayTriangulator {
      * @throws NotEnoughPointsException
      *             Thrown when the point set contains less than three points
      */
-    public DelaunayTriangulator(List<Vector2D> pointSet) {
+    public DelaunayTriangulator(List<Vertex> pointSet) {
         this.pointSet = pointSet;
         this.triangleSoup = new TriangleSoup();
     }
@@ -32,12 +32,8 @@ public class DelaunayTriangulator {
      *
      * @throws NotEnoughPointsException
      */
-    public void triangulate() throws NotEnoughPointsException {
+    public void triangulate(){
         triangleSoup = new TriangleSoup();
-
-        if (pointSet == null || pointSet.size() < 3) {
-            throw new NotEnoughPointsException("Less than three points in point set.");
-        }
 
         /**
          * In order for the in circumcircle test to not consider the vertices of
@@ -47,15 +43,15 @@ public class DelaunayTriangulator {
          */
         double maxOfAnyCoordinate = 0.0d;
 
-        for (Vector2D vector : getPointSet()) {
-            maxOfAnyCoordinate = Math.max(Math.max(vector.x, vector.y), maxOfAnyCoordinate);
+        for (Vertex vertex : getPointSet()) {
+            maxOfAnyCoordinate = Math.max(Math.max(vertex.x, vertex.y), maxOfAnyCoordinate);
         }
 
         maxOfAnyCoordinate *= 16.0d;
 
-        Vector2D p1 = new Vector2D(0.0d, 3.0d * maxOfAnyCoordinate);
-        Vector2D p2 = new Vector2D(3.0d * maxOfAnyCoordinate, 0.0d);
-        Vector2D p3 = new Vector2D(-3.0d * maxOfAnyCoordinate, -3.0d * maxOfAnyCoordinate);
+        Vertex p1 = new Vertex(0.0d, 3.0d * maxOfAnyCoordinate);
+        Vertex p2 = new Vertex(3.0d * maxOfAnyCoordinate, 0.0d);
+        Vertex p3 = new Vertex(-3.0d * maxOfAnyCoordinate, -3.0d * maxOfAnyCoordinate);
 
         Triangle2D superTriangle = new Triangle2D(p1, p2, p3);
 
@@ -78,8 +74,8 @@ public class DelaunayTriangulator {
                 Triangle2D first = triangleSoup.findOneTriangleSharing(edge);
                 Triangle2D second = triangleSoup.findNeighbour(first, edge);
 
-                Vector2D firstNoneEdgeVertex = first.getNoneEdgeVertex(edge);
-                Vector2D secondNoneEdgeVertex = second.getNoneEdgeVertex(edge);
+                Vertex firstNoneEdgeVertex = first.getNoneEdgeVertex(edge);
+                Vertex secondNoneEdgeVertex = second.getNoneEdgeVertex(edge);
 
                 triangleSoup.remove(first);
                 triangleSoup.remove(second);
@@ -102,9 +98,9 @@ public class DelaunayTriangulator {
                 /**
                  * The vertex is inside a triangle.
                  */
-                Vector2D a = triangle.a;
-                Vector2D b = triangle.b;
-                Vector2D c = triangle.c;
+                Vertex a = triangle.a;
+                Vertex b = triangle.b;
+                Vertex c = triangle.c;
 
                 triangleSoup.remove(triangle);
 
@@ -140,7 +136,7 @@ public class DelaunayTriangulator {
      * @param newVertex
      *            The new vertex
      */
-    private void legalizeEdge(Triangle2D triangle, Edge2D edge, Vector2D newVertex) {
+    private void legalizeEdge(Triangle2D triangle, Edge2D edge, Vertex newVertex) {
         Triangle2D neighbourTriangle = triangleSoup.findNeighbour(triangle, edge);
 
         /**
@@ -151,7 +147,7 @@ public class DelaunayTriangulator {
                 triangleSoup.remove(triangle);
                 triangleSoup.remove(neighbourTriangle);
 
-                Vector2D noneEdgeVertex = neighbourTriangle.getNoneEdgeVertex(edge);
+                Vertex noneEdgeVertex = neighbourTriangle.getNoneEdgeVertex(edge);
 
                 Triangle2D firstTriangle = new Triangle2D(noneEdgeVertex, edge.a, newVertex);
                 Triangle2D secondTriangle = new Triangle2D(noneEdgeVertex, edge.b, newVertex);
@@ -181,7 +177,7 @@ public class DelaunayTriangulator {
      *            The permutation used to shuffle the point set
      */
     public void shuffle(int[] permutation) {
-        List<Vector2D> temp = new ArrayList<Vector2D>();
+        List<Vertex> temp = new ArrayList<Vertex>();
         for (int i = 0; i < permutation.length; i++) {
             temp.add(pointSet.get(permutation[i]));
         }
@@ -189,16 +185,16 @@ public class DelaunayTriangulator {
     }
 
     /**
-     * Returns the point set in form of a vector of 2D vectors.
+     * Returns the point set in form of a vertex of 2D vertexs.
      *
      * @return Returns the points set.
      */
-    public List<Vector2D> getPointSet() {
+    public List<Vertex> getPointSet() {
         return pointSet;
     }
 
     /**
-     * Returns the trianges of the triangulation in form of a vector of 2D
+     * Returns the trianges of the triangulation in form of a vertex of 2D
      * triangles.
      *
      * @return Returns the triangles of the triangulation.

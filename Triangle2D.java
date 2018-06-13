@@ -7,9 +7,9 @@ import java.util.Arrays;
  */
 public class Triangle2D {
 
-    public Vector2D a;
-    public Vector2D b;
-    public Vector2D c;
+    public Vertex a;
+    public Vertex b;
+    public Vertex c;
 
     /**
      * Constructor of the 2D triangle class used to create a new triangle
@@ -22,7 +22,7 @@ public class Triangle2D {
      * @param c
      *            The third vertex of the triangle
      */
-    public Triangle2D(Vector2D a, Vector2D b, Vector2D c) {
+    public Triangle2D(Vertex a, Vertex b, Vertex c) {
         this.a = a;
         this.b = b;
         this.c = c;
@@ -36,7 +36,7 @@ public class Triangle2D {
      *            The point to be tested
      * @return Returns true iff the point lies inside this 2D triangle
      */
-    public boolean contains(Vector2D point) {
+    public boolean contains(Vertex point) {
         double pab = point.sub(a).cross(b.sub(a));
         double pbc = point.sub(b).cross(c.sub(b));
 
@@ -67,7 +67,7 @@ public class Triangle2D {
      * @return Returns true iff the point lies inside the circumcircle through
      *         the three points a, b, and c of the triangle
      */
-    public boolean isPointInCircumcircle(Vector2D point) {
+    public boolean isPointInCircumcircle(Vertex point) {
         double a11 = a.x - point.x;
         double a21 = b.x - point.x;
         double a31 = c.x - point.x;
@@ -131,7 +131,7 @@ public class Triangle2D {
      *            The edge
      * @return The vertex of this triangle that is not part of the edge
      */
-    public Vector2D getNoneEdgeVertex(Edge2D edge) {
+    public Vertex getNoneEdgeVertex(Edge2D edge) {
         if (a != edge.a && a != edge.b) {
             return a;
         } else if (b != edge.a && b != edge.b) {
@@ -152,7 +152,7 @@ public class Triangle2D {
      * @return Returns true if the Vertex is one of the vertices describing this
      *         triangle
      */
-    public boolean hasVertex(Vector2D vertex) {
+    public boolean hasVertex(Vertex vertex) {
         if (a == vertex || b == vertex || c == vertex) {
             return true;
         }
@@ -168,7 +168,7 @@ public class Triangle2D {
      *            The point the nearest edge is queried for
      * @return The edge of this triangle that is nearest to the specified point
      */
-    public EdgeDistancePack findNearestEdge(Vector2D point) {
+    public EdgeDistancePack findNearestEdge(Vertex point) {
         EdgeDistancePack[] edges = new EdgeDistancePack[3];
 
         edges[0] = new EdgeDistancePack(new Edge2D(a, b),
@@ -192,8 +192,8 @@ public class Triangle2D {
      *            The point to which we search the closest point on the edge
      * @return The closest point on the given edge to the specified point
      */
-    private Vector2D computeClosestPoint(Edge2D edge, Vector2D point) {
-        Vector2D ab = edge.b.sub(edge.a);
+    private Vertex computeClosestPoint(Edge2D edge, Vertex point) {
+        Vertex ab = edge.b.sub(edge.a);
         double t = point.sub(edge.a).dot(ab) / ab.dot(ab);
 
         if (t < 0.0d) {

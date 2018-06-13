@@ -24,12 +24,12 @@ import javafx.scene.text.*;
 
 public class MainGui extends Application {
 
-  public List<Vector2D> nodeSet = new ArrayList<>();
+  public Graph G = new Graph();
   VBox verticalBox = new VBox();
   HBox horizontalBox = new HBox();
-  Group coordinateRoot = new Group();
-  Group triLayer = new Group();
+  Group coordinateSystem = new Group();
   Group nodeLayer = new Group();
+  Group edgeLayer = new Group();
   Text informationText = new Text("  hallo");
   Scene scene = new Scene(verticalBox, 800, 627);
 
@@ -42,10 +42,10 @@ public class MainGui extends Application {
     setupNodeLayer();
     addButtons(stage);
     stage.setScene(scene);
-    coordinateRoot.getChildren().add(triLayer);
-    coordinateRoot.getChildren().add(nodeLayer);
     horizontalBox.getChildren().add(informationText);
-    verticalBox.getChildren().add(coordinateRoot);
+    coordinateSystem.getChildren().add(edgeLayer);
+    coordinateSystem.getChildren().add(nodeLayer);
+    verticalBox.getChildren().add(coordinateSystem);
     verticalBox.getChildren().add(horizontalBox);
     stage.show();
   }
@@ -59,7 +59,7 @@ public class MainGui extends Application {
     r.setFill(Color.color(0,0,0,0));
     r.setOnMousePressed(new EventHandler<MouseEvent>() {
       public void handle(MouseEvent event) {
-        addPoint(event.getX(), event.getY());
+        addNode(event.getX(), event.getY());
       }
     });
     nodeLayer.getChildren().add(r);
@@ -85,23 +85,22 @@ public class MainGui extends Application {
 
   public void loadFile(File file){
     PointLoader loader = new PointLoader(file);
-    nodeLayer.getChildren().clear();
+    coordinateSystem.getChildren().clear();
     setupNodeLayer();
-    nodeSet.clear();
-    for(Vector2D node : loader.getNodes()){
-      addPoint(node.x, node.y);
+    G.clear();
+    List<Vertex> newVertices = loader.getVertices();
+    for(Vertex v : newVertices) {
+      addNode(v.x, v.y);
     }
   }
 
-
-
-  public void addPoint(double x, double y) {
+  public void addNode(double x, double y) {
     Circle node = new Circle();
     node.setCenterX(x);
     node.setCenterY(y);
     node.setRadius(4.0);
-    int position = nodeSet.size();
-    nodeSet.add(new Vector2D(x,y));
+    int position = G.vList.size();
+    G.addVertex(new Vertex(x,y));
     if(position == 0){
       node.setFill(Color.LAWNGREEN);
     } else if (position == 1){
@@ -114,58 +113,47 @@ public class MainGui extends Application {
         if(deltaX + deltaY > 2){
           node.setCenterX(event.getSceneX());
           node.setCenterY(event.getSceneY());
-          nodeSet.set(position, new Vector2D(event.getSceneX(), event.getSceneY()));
-          List<Triangle2D> triangles = getTriangulation();
-          if(triangles != null){
-            drawTriangulation(triangles);
-            drawRoutingPath(triangles);
-          }
+          G.vList.get(position).x = event.getSceneX();
+          G.vList.get(position).y = event.getSceneY();
+          G.calculateTriangulation();
+          updateEdges();
         }
       }
     });
     nodeLayer.getChildren().add(node);
-    List<Triangle2D> triangles = getTriangulation();
-    if(triangles != null){
-      drawTriangulation(triangles);
-      drawRoutingPath(triangles);
+    updateEdges();
+  }
+
+  public void updateEdges() {
+    edgeLayer.getChildren().clear();
+    for (Vertex v : G.V) {
+      for (Vertex w : v.neighbours) {
+        edgeLayer.getChildren().add(new Line(v.x, v.y, w.x, w.y));
+      }
+    }
+    if(G.V.size() > 2){
+      drawRoutingPath(G.laubentahlschesRouting());
     }
   }
 
-  public List<Triangle2D> getTriangulation(){
-    DelaunayTriangulator triangulator = new DelaunayTriangulator(nodeSet);
-    try {
-      triangulator.triangulate();
-      return triangulator.getTriangles();
-    } catch (NotEnoughPointsException e1) { /* not enough points */ }
-    return null;
-  }
 
-  public void drawTriangulation(List<Triangle2D> triangles){
-    triLayer.getChildren().clear();
-    for (int i = 0; i < triangles.size(); i++) {
-      Triangle2D triangle = triangles.get(i);
-      Polygon polygon = new Polygon();
-      polygon.getPoints().addAll(new Double[]{
-          triangle.a.x, triangle.a.y,
-          triangle.b.x, triangle.b.y,
-          triangle.c.x, triangle.c.y });
-      polygon.setFill(Color.color(0.9,0.9,0.9));
-      polygon.setStroke(Color.BLACK);
-      polygon.setStrokeWidth(1);
-      triLayer.getChildren().add(polygon);
+  public void drawRoutingPath(List<Vertex> path){
+    for(int i = 0; i < path.size() - 1; i++){
+      Line line = new Line(path.get(i).x, path.get(i).y, path.get(i+1).x, path.get(i+1).y);
+      line.setStroke(Color.RED);
+      line.setStrokeWidth(2);
+      edgeLayer.getChildren().add(line);
     }
   }
 
+
+/*
   public void drawRoutingPath(List<Triangle2D> triangles){ // TODO: distances and ratios from the routing in the textfield. also the routingpath sould return a list of verticies not vectors.
     Graph G = setupGraph(triangles);
     List<Vector2D> path = G.greedyRoutingPath();
     List<Vector2D> pathOpt = G.optimalRoutingPath();
     double greedyDist = 0.0;
-    for(int i = 0; i < path.size() - 1; i++){
-      Line line = new Line(path.get(i).x, path.get(i).y, path.get(i+1).x, path.get(i+1).y);
-      line.setStroke(Color.RED);
-      line.setStrokeWidth(2);
-      triLayer.getChildren().add(line);
+
 
     }
     double optimalDist = 0.0;
@@ -192,6 +180,8 @@ public class MainGui extends Application {
     }
     return G;
   }
+
+  */
 }
 
 

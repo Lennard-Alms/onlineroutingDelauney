@@ -23,27 +23,27 @@ public class PointLoader {
         return (entireFileText);
     }
 
-    public List<Vector2D> getPointsFromFile(String prefix) {
+    public List<Vertex> getPointsFromFile(String prefix) {
         String text = this.fileText;
         String result = text.substring(text.indexOf(prefix + "Start") + prefix.length() + 5 , text.indexOf(prefix + "End"));
         String lines[] = result.split("\\r?\\n");
-        List<Vector2D> pointSet = new ArrayList<>();
+        List<Vertex> pointSet = new ArrayList<>();
 
         for(int i = 1; i < lines.length; i += 2){
-            Vector2D point = new Vector2D(Double.parseDouble(lines[i]) + 400.0, 300.0 - Double.parseDouble(lines[i+1]));
+            Vertex point = new Vertex(Double.parseDouble(lines[i]) + 400.0, 300.0 - Double.parseDouble(lines[i+1]));
             pointSet.add(point);
         }
 
         return pointSet;
     }
 
-    public List<Vector2D> getNodes(){
-        List<Vector2D> nodes = getPointsFromFile("GraphNodes");
+    public List<Vertex> getVertices(){
+        List<Vertex> nodes = getPointsFromFile("GraphNodes");
         nodes.addAll(0, getPointsFromFile("HighwayNodes"));
         nodes.addAll(0, getPointsFromFile("RoutingNodes"));
         HashSet<String> hs = new HashSet<>();
-        List<Vector2D> nodes_tmp = new ArrayList<>();
-        for(Vector2D v : nodes) {
+        List<Vertex> nodes_tmp = new ArrayList<>();
+        for(Vertex v : nodes) {
             if (!hs.contains(v.toString())) {
                 nodes_tmp.add(v);
                 hs.add(v.toString());
