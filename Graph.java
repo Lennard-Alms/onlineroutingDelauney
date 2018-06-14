@@ -3,6 +3,8 @@ import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Comparator;
+import java.util.Collections;
 import java.lang.Math;
 
 public class Graph {
@@ -123,6 +125,158 @@ public class Graph {
         }
         return path;
     }
+    
+    public double Slope(Vertex from, Vertex to) {
+  		return (to.y - from.y) / (to.x - from.x);
+  	}
+    
+    public Vertex Midpoint(Vertex a, Vertex b) {
+  		// midpoint is the average of x & y coordinates
+  		return new Vertex(
+  			(a.x + b.x) / 2,
+  			(a.y + b.y) / 2
+  		);
+  	}
+    
+    public Vertex GetCircumcenter(Vertex a, Vertex b, Vertex c) {
+  		// determine midpoints (average of x & y coordinates)
+  		Vertex midAB = Midpoint(a, b);
+  		Vertex midBC = Midpoint(b, c);
+
+  		// determine slope
+  		// we need the negative reciprocal of the slope to get the slope of the perpendicular bisector
+  		double slopeAB = -1 / Slope(a, b);
+  		double slopeBC = -1 / Slope(b, c);
+
+  		// y = mx + b
+  		// solve for b
+  		double bAB = midAB.y - slopeAB * midAB.x;
+  		double bBC = midBC.y - slopeBC * midBC.x;
+
+  		// solve for x & y
+  		// x = (b1 - b2) / (m2 - m1)
+  		double x = (bAB - bBC) / (slopeBC - slopeAB);
+  		Vertex circumcenter = new Vertex(
+  			x,
+  			(slopeAB * x) + bAB
+  		);
+
+  		return circumcenter;
+  	}
+    
+    
+    public List<Vertex> chewsRouting() {
+        List<Vertex> path = new ArrayList<>();
+        Vertex current = vList.get(0);
+        path.add(current);
+        
+        System.out.println("-----------------------");
+        
+        while(!current.equals(vList.get(1))) {
+          Vertex zero_y_axis = new Vertex(.1, .0);
+          Vertex current_t = vList.get(1).sub(current);
+          
+          double dot = zero_y_axis.dot(current_t);
+          double zero_y_axis_length = zero_y_axis.distance(new Vertex(.0, .0));
+          double current_t_length = current_t.distance(new Vertex(.0, .0));
+          
+          double angle_current_t = (dot / (zero_y_axis_length * current_t_length)); // = Cos( alpha )
+          double alpha_current_t = Math.toDegrees(Math.acos(angle_current_t));
+          
+          
+          List<Vertex> neighbours_rot = new ArrayList<>();
+          List<Vertex> neighbours = new ArrayList<>();
+          
+          
+          System.out.println("-------------");
+          System.out.println(current);
+          
+          for(Vertex v : current.neighbours) {
+            Vertex z = v.sub(current);
+            double rad = Math.toRadians(alpha_current_t);;
+            if(current.sub(vList.get(1)).y < 0) {
+              rad = -rad;
+            }
+            Vertex v_new = new Vertex(z.x * Math.cos(rad) - z.y * Math.sin(rad),
+              z.x * Math.sin(rad) + z.y * Math.cos(rad)).add(current);
+            neighbours_rot.add(v_new);
+            neighbours.add(v);
+          }
+          
+          List<Vertex> neighbours_rot_archive = new ArrayList<>(neighbours_rot);          
+          
+          Collections.sort(neighbours_rot ,new Comparator<Vertex>() {
+              @Override
+              public int compare(Vertex v1, Vertex v2) {
+                return (v1.x < v2.x) ? -1 : 0;
+              }
+          });
+          Vertex x_rot = neighbours_rot.get(neighbours_rot.size() - 2);
+          Vertex y_rot = neighbours_rot.get(neighbours_rot.size() - 1);
+          Vertex x = null;
+          Vertex y = null;
+          int index = 0;
+          
+          for(Vertex v : neighbours_rot_archive) {
+            if(v.equals(x_rot)) x = neighbours.get(index);
+            if(v.equals(y_rot)) y = neighbours.get(index);
+            index++;
+          }
+          
+          for(Vertex v : current.neighbours) {
+            if(v.equals(x)) {
+              x = v;              
+            }
+            if(v.equals(y)) y = v;
+            index++;
+          }
+          
+          //Is current point below or above center of circle
+          Vertex circumcenter = GetCircumcenter(current, x_rot, y_rot);
+          double alpha_current_x = 0;
+          double alpha_current_y = 0;
+          
+          Vertex current_x = x.sub(current);
+          Vertex current_y = y.sub(current);
+          double dot_x = zero_y_axis.dot(current_x);
+          double dot_y = zero_y_axis.dot(current_y);
+          double current_x_length = current_x.distance(new Vertex(.0, .0));
+          double current_y_length = current_y.distance(new Vertex(.0, .0));
+          
+          double angle_current_x = (dot_x / (zero_y_axis_length * current_x_length)); // = Cos( alpha )
+          double angle_current_y = (dot_y / (zero_y_axis_length * current_y_length)); // = Cos( alpha )
+          
+          alpha_current_x = Math.toDegrees(Math.acos(angle_current_x));
+          alpha_current_y = Math.toDegrees(Math.acos(angle_current_y));
+          
+          System.out.println(x);
+          System.out.println(y);
+          if(x_rot.x > current.x && y_rot.x > current.x) {
+            System.out.println("true");
+          } else {
+            System.out.println("false");
+          }
+          
+          if(current.y >= circumcenter.x) {
+            if(alpha_current_x < alpha_current_y) {
+              current = y;
+            } else {
+              current = x;
+            }
+          } else {
+            if(alpha_current_x < alpha_current_y) {
+              current = x;
+            } else {
+              current = y;
+            }
+          }
+          System.out.println("Chosen: " + current);
+          path.add(current);
+          // current = vList.get(1);
+        }
+        return path;
+    }
+    
 
     public List<Vertex> greedyRoutingPath(){
         Vertex current = vList.get(0);

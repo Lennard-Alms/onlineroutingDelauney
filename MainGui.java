@@ -136,7 +136,8 @@ public class MainGui extends Application {
     }
     if(G.V.size() > 1){
       informationBox.getChildren().clear();
-      drawRoutingPath(G.laubentahlschesRouting(), Color.RED, 3, "LAUB");
+      // drawRoutingPath(G.laubentahlschesRouting(), Color.RED, 3, "LAUB");
+      drawRoutingPath(G.chewsRouting(), Color.RED, 3, "CHEW");
       drawRoutingPath(G.optimalRoutingPath(), Color.LAWNGREEN, 2, "Djiks");
       drawRoutingPath(G.greedyRoutingPath(), Color.AQUA, 1, "Greed");
     }
