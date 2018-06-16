@@ -23,10 +23,19 @@ public class Geometry {
     }
   }
 
-  public static double getDistanceFromPointToIntersection(Vertex p,Vertex x,Vertex q,Vertex y) {
-      Vertex s = y.sub(q);
-      Vertex r = x.sub(p);
-      return s.cross(q.sub(p)) / s.cross(r);
+  public static double getDistanceFromPointToIntersection(Vertex s,Vertex t,Vertex v,Vertex w) {
+    Vertex s_t = t.sub(s);
+    Vertex v_w = w.sub(v);
+    double x1 = s.x;
+    double y1 = s.y;
+    double x2 = s_t.x;
+    double y2 = s_t.y;
+    double x3 = v.x;
+    double y3 = v.y;
+    double x4 = v_w.x;
+    double y4 = v_w.y;
+    return (x3 * y4 - x1 * y4 + y1 * x4 - y3 * x4) / (x2 * y4 - y2 * x4);
+
   }
 
   public static double calculateAngle(Vertex x, Vertex y, Vertex referencePoint, int mode) {
