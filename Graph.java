@@ -57,54 +57,50 @@ public class Graph {
 
     }
 
-    public void addVertex(Vertex v){
+    public void addVertex(Vertex v) {
         V.add(v);
         vList.add(v);
         calculateTriangulation();
     }
 
-    public void calculateTriangulation(){
-        for(Vertex v : V){
+    public void calculateTriangulation() {
+        for(Vertex v : V) {
             v.neighbours.clear();
         }
-        if(V.size() > 2){
+        if(V.size() > 2) {
             DelaunayTriangulator triangulator = new DelaunayTriangulator(vList);
             triangulator.triangulate();
             List<Triangle2D> triangles = triangulator.getTriangles();
-            for(Triangle2D tri : triangles){
+            for(Triangle2D tri : triangles) {
                 addEdge(tri.a, tri.b);
                 addEdge(tri.b, tri.c);
                 addEdge(tri.a, tri.c);
             }
-        } else if(V.size() == 2){
+        } else if(V.size() == 2) {
             addEdge(vList.get(0), vList.get(1));
         }
     }
 
-    public void addEdge(Vertex v, Vertex w){
-        if(V.contains(v) && V.contains(w)){
+    public void addEdge(Vertex v, Vertex w) {
+        if(V.contains(v) && V.contains(w)) {
             v.addNeighbour(w);
             w.addNeighbour(v);
         }
     }
 
-    public void clear(){
+    public void clear() {
         vList.clear();
         V.clear();
     }
 
 
 
-    public List<Vertex> laubentahlschesRouting(){
+    public List<Vertex> laubentahlschesRouting() {
         List<Vertex> path = new ArrayList<>();
         Vertex current = vList.get(0);
         path.add(current);
 
-        System.out.println("-----------------------");
-
-        int epoche = 0;
         while(!current.equals(vList.get(1))) {
-          System.out.println("Iteration: " + epoche);
             HashSet<Vertex> candidates = new HashSet<>();
             for(Vertex v : current.neighbours) {
                 if(current.distance(vList.get(1)) > v.distance(vList.get(1))) {
@@ -141,65 +137,46 @@ public class Graph {
                     double angle = (dot / (v_length * t_length));
                     angle = Math.toDegrees(Math.acos(angle)) / 90;
 
-
                     routingRatio = ((distNorm) / (edgeNorm)) / (Math.pow(angle, 3));
-                    // routingRatio = ( angle);
-                    // System.out.println(angle);
-                    System.out.println(distNorm + " / " + edgeNorm + " = " + routingRatio);
                     if(routingRatio > bestRatio && bestRatio != 0) {
                         best = v;
                         bestRatio = routingRatio;
                     }
-
-                    // if(Math.abs(1 - routingRatio) < bestRatio && bestRatio != 0) {
-                    //
-                    // }
-
                 }
             } else {
               best = bestDist;
             }
             current = best;
             path.add(current);
-            System.out.println("");
-            epoche++;
         }
         return path;
     }
 
-    public List<Vertex> chewsNew(Pane edgeLayer){
-        /*
-        find next triangle nodes v,w
-        find circle
-        find leftmost point
-        find intersection point
-        decide where to route
-         */
+    public List<Vertex> chewsNew(Pane edgeLayer) {
         List<Vertex> path = new ArrayList<>();
         Vertex s = vList.get(0);
         Vertex t = vList.get(1);
-        // Line st = new Line(s.x, s.y, t.x, t.y);
-        // st.setStroke(Color.BROWN);
-        // edgeLayer.getChildren().add(st);
         Vertex current = s;
         path.add(current);
         int i = 0;
-        while(!current.equals(t) && i < 10){
+        while(!current.equals(t) && i < 1000) {
             i++;
             Vertex x = null;
             Vertex y = null;
-            for(Vertex v : current.neighbours){
-                if(v.equals(t)){
+            for(Vertex v : current.neighbours) {
+
+                if(v.equals(t)) {
                     path.add(t);
                     return path;
                 }
-                for(Vertex w : current.neighbours){
-                    if(v.neighbours.contains(w)){
-                        if(intersects(s,t,v,w)){
-                            if(x == null){
+
+                for(Vertex w : current.neighbours) {
+                    if(v.neighbours.contains(w)) {
+                        if(intersects(s,t,v,w)) {
+                            if(x == null) {
                                 x = v;
                                 y = w;
-                            } else if(intersectionDist(s,t,x,y) < intersectionDist(s,t,v,w)){
+                            } else if(intersectionDist(s,t,x,y) < intersectionDist(s,t,v,w)) {
                                 x = v;
                                 y = w;
                             }
@@ -208,25 +185,11 @@ public class Graph {
                 }
             }
 
-            // Line chosenpartners = new Line(x.x, x.y, y.x, y.y);
-            // chosenpartners.setStroke(Color.BLUE);
-            // edgeLayer.getChildren().add(chosenpartners);
             Vertex cc = GetCircumcenter(current, x, y);
-
-            // Circle node = new Circle();
-            // node.setCenterX(cc.x);
-            // node.setCenterY(cc.y);
-            // node.setRadius(cc.distance(current));
-            // node.setFill(Color.color(0,0,0,0));
-            // node.setStroke(Color.BLACK);
-            // node.setStrokeWidth(1);
-            // edgeLayer.getChildren().add(node);
             Vertex leftmost = cc.add(s.sub(t).mult(1/s.sub(t).mag()).mult(cc.distance(current)));
             Vertex rightmostInter = findRightIntersect(s,t,cc,current);
-            // Line gg = new Line(leftmost.x, leftmost.y, rightmostInter.x, rightmostInter.y);
-            // gg.setStroke(Color.VIOLET);
-            // edgeLayer.getChildren().add(gg);
-            if(upordown(leftmost, rightmostInter, current) == upordown(leftmost, rightmostInter, x)){
+
+            if(upordown(leftmost, rightmostInter, current) == upordown(leftmost, rightmostInter, x)) {
                 current = x;
             } else {
                 current = y;
@@ -239,14 +202,14 @@ public class Graph {
 
 
 
-    public int upordown(Vertex l, Vertex r, Vertex t){
+    public int upordown(Vertex l, Vertex r, Vertex t) {
         Vertex lin = r.sub(l);
         Vertex orth = new Vertex(lin.y, -lin.x);
         double angle = getAngle(orth, t, l);
-        if(orth.dot(t.sub(l)) == 0){
+        if(orth.dot(t.sub(l)) == 0) {
             return 1;
         }
-        if(angle <= 90){
+        if(angle <= 90) {
             return 1;
         } else{
             return -1;
@@ -254,7 +217,7 @@ public class Graph {
     }
 
 
-    public Vertex findRightIntersect(Vertex s, Vertex t, Vertex cc, Vertex current){
+    public Vertex findRightIntersect(Vertex s, Vertex t, Vertex cc, Vertex current) {
         Vertex sToT = t.sub(s);
         Vertex sToCC = cc.sub(s);
         double cp = sToCC.dot(sToT)/sToT.dot(sToT);
@@ -266,7 +229,7 @@ public class Graph {
         return s.add(dest);
 
     }
-    public double intersectionDist(Vertex p,Vertex x,Vertex q,Vertex y){
+    public double intersectionDist(Vertex p,Vertex x,Vertex q,Vertex y) {
         Vertex s = y.sub(q);
         Vertex r = x.sub(p);
         return s.cross(q.sub(p)) / s.cross(r);
@@ -517,13 +480,13 @@ public class Graph {
     }
 
 
-    public List<Vertex> greedyRoutingPath(){
+    public List<Vertex> greedyRoutingPath() {
         Vertex current = vList.get(0);
         List<Vertex> path = new ArrayList<>();
         path.add(current);
         Vertex best = current;
-        while(!current.equals(vList.get(1))){
-            for(Vertex v : current.neighbours){
+        while(!current.equals(vList.get(1))) {
+            for(Vertex v : current.neighbours) {
                 if(best.distance(vList.get(1)) > v.distance(vList.get(1))) {
                     best = v;
                 }
@@ -534,8 +497,8 @@ public class Graph {
         return path;
     }
 
-    public List<Vertex> optimalRoutingPath(){
-        for(Vertex v : V){
+    public List<Vertex> optimalRoutingPath() {
+        for(Vertex v : V) {
             v.l = Double.POSITIVE_INFINITY;
         }
         vList.get(0).l = 0;
@@ -543,15 +506,15 @@ public class Graph {
         q.add(vList.get(0));
         HashSet<Vertex> R = new HashSet<>(V);
         Hashtable<Vertex, Vertex> p = new Hashtable<>();
-        while(R.size() > 0){
+        while(R.size() > 0) {
             Vertex v = 	q.poll();
-            while(!R.contains(v)){
+            while(!R.contains(v)) {
                 v = q.poll();
             }
             R.remove(v);
-            for(Vertex w : v.neighbours){
-                if(R.contains(w)){
-                    if(w.l > v.l + v.distance(w)){
+            for(Vertex w : v.neighbours) {
+                if(R.contains(w)) {
+                    if(w.l > v.l + v.distance(w)) {
                         w.l = v.l + v.distance(w);
                         q.add(w);
                         p.remove(w);

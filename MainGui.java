@@ -23,6 +23,7 @@ import javafx.scene.text.*;
 import java.text.DecimalFormat;
 import javafx.scene.layout.Pane;
 
+import java.util.Random;
 
 public class MainGui extends Application {
 
@@ -140,10 +141,10 @@ public class MainGui extends Application {
     if(G.V.size() > 1){
       informationBox.getChildren().clear();
       topLayer.getChildren().clear();
-      drawRoutingPath(G.laubentahlschesRouting(), Color.VIOLET, 4, "LAUB");
+      drawRoutingPath(G.laubenthalschesRouting(), Color.VIOLET, 4, "LAUB");
       drawRoutingPath(G.chewsNew(topLayer), Color.RED, 3, "CHEW");
       drawRoutingPath(G.optimalRoutingPath(), Color.LAWNGREEN, 2, "Djiks");
-      drawRoutingPath(G.greedyRoutingPath(), Color.AQUA, 1, "Greed");
+      drawRoutingPath(G.greedyRoutingPath(), Color.AQUA, 1, "Greedy");
     }
   }
 
