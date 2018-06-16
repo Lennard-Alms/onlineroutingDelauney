@@ -126,7 +126,7 @@ public class Graph {
         return path;
     }
 
-    public List<Vertex> chewsNew(Pane edgeLayer) {
+    public List<Vertex> chewsNew() {
         List<Vertex> path = new ArrayList<>();
         Vertex s = vList.get(0);
         Vertex t = vList.get(1);

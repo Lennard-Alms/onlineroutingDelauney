@@ -142,7 +142,7 @@ public class MainGui extends Application {
       informationBox.getChildren().clear();
       topLayer.getChildren().clear();
       drawRoutingPath(G.laubenthalschesRouting(), Color.VIOLET, 4, "LAUB");
-      drawRoutingPath(G.chewsNew(topLayer), Color.RED, 3, "CHEW");
+      drawRoutingPath(G.chewsNew(), Color.RED, 3, "CHEW");
       drawRoutingPath(G.optimalRoutingPath(), Color.LAWNGREEN, 2, "Djiks");
       drawRoutingPath(G.greedyRoutingPath(), Color.AQUA, 1, "Greedy");
     }
