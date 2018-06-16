@@ -144,10 +144,7 @@ public class MainGui extends Application {
     List<Vertex> newVertices = loader.getVertices();
     for(Vertex v : newVertices) {
       addNode(v.x, v.y);
-      System.out.println(v.x);
-      System.out.println(v.y);
     }
-    System.out.println("-");
   }
 
   public void addNode(double x, double y) {

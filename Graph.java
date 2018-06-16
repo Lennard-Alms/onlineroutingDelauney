@@ -113,7 +113,6 @@ public class Graph {
     }
 
     public List<Vertex> chewsNew() {
-        System.out.println("____________");
         List<Vertex> path = new ArrayList<>();
         Vertex s = vList.get(0);
         Vertex t = vList.get(1);
@@ -137,17 +136,14 @@ public class Graph {
                             if(x == null) {
                                 x = v;
                                 y = w;
-                                System.out.println("first set");
                             } else if(Geometry.getDistanceFromPointToIntersection(s,t,x,y) < Geometry.getDistanceFromPointToIntersection(s,t,v,w)) {
                                 x = v;
                                 y = w;
-                                System.out.println("change");
                             }
                         }
                     }
                 }
             }
-            System.out.println("next iter");
 
             Vertex cc = GetCircumcenter(current, x, y);
             Vertex leftmost = cc.add(s.sub(t).mult(1/s.sub(t).mag()).mult(cc.distance(current)));

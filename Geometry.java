@@ -11,7 +11,7 @@ public class Geometry {
 
   public static int comparePointToLine(Vertex l, Vertex r, Vertex t) {
     Vertex lin = r.sub(l);
-    Vertex orth = new Vertex(lin.y, -lin.x);
+    Vertex orth = new Vertex(-lin.y, lin.x);
     double angle = calculateAngle(orth, t, l);
     if(orth.dot(t.sub(l)) == 0) {
         return 1;
