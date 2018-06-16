@@ -58,9 +58,9 @@ public class Graph {
         List<Vertex> path = new ArrayList<>();
         Vertex current = vList.get(0);
         path.add(current);
-        
+
         System.out.println("-----------------------");
-        
+
         int epoche = 0;
         while(!current.equals(vList.get(1))) {
           System.out.println("Iteration: " + epoche);
@@ -86,21 +86,21 @@ public class Graph {
                 double distNorm;
                 double edgeNorm;
                 double routingRatio;
-                
-                for(Vertex v : candidates) {    
+
+                for(Vertex v : candidates) {
                     distNorm = bestDist.distance(vList.get(1)) / v.distance(vList.get(1));
                     edgeNorm = current.distance(v) / current.distance(longestEdge);
-                    
+
                     Vertex v_ = v.sub(current);
                     Vertex t_ = vList.get(1).sub(current);
-                    
+
                     double dot = v_.dot(t_);
                     double v_length = v_.distance(new Vertex(.0,.0));
                     double t_length = t_.distance(new Vertex(.0,.0));
                     double angle = (dot / (v_length * t_length));
                     angle = Math.toDegrees(Math.acos(angle)) / 90;
-                    
-                    
+
+
                     routingRatio = ((distNorm) / (edgeNorm)) / (Math.pow(angle, 3));
                     // routingRatio = ( angle);
                     // System.out.println(angle);
@@ -109,11 +109,11 @@ public class Graph {
                         best = v;
                         bestRatio = routingRatio;
                     }
-                    
+
                     // if(Math.abs(1 - routingRatio) < bestRatio && bestRatio != 0) {
-                    // 
+                    //
                     // }
-                    
+
                 }
             } else {
               best = bestDist;
@@ -125,11 +125,11 @@ public class Graph {
         }
         return path;
     }
-    
+
     public double Slope(Vertex from, Vertex to) {
   		return (to.y - from.y) / (to.x - from.x);
   	}
-    
+
     public Vertex Midpoint(Vertex a, Vertex b) {
   		// midpoint is the average of x & y coordinates
   		return new Vertex(
@@ -137,7 +137,7 @@ public class Graph {
   			(a.y + b.y) / 2
   		);
   	}
-    
+
     public Vertex GetCircumcenter(Vertex a, Vertex b, Vertex c) {
   		// determine midpoints (average of x & y coordinates)
   		Vertex midAB = Midpoint(a, b);
@@ -163,120 +163,209 @@ public class Graph {
 
   		return circumcenter;
   	}
-    
-    
+
+    boolean intersects(Vertex p1, Vertex p2, Vertex p3, Vertex p4) {
+      double x1 = p1.x;
+      double x2 = p2.x;
+      double x3 = p3.x;
+      double x4 = p4.x;
+      double y1 = p1.y;
+      double y2 = p2.y;
+      double y3 = p3.y;
+      double y4 = p4.y;
+
+      double bx = x2 - x1;
+      double by = y2 - y1;
+      double dx = x4 - x3;
+      double dy = y4 - y3;
+      double b_dot_d_perp = bx * dy - by * dx;
+
+      if (b_dot_d_perp == 0) {
+        return false;
+      }
+      double cx = x3 - x1;
+      double cy = y3 - y1;
+      double t = (cx * dy - cy * dx) / b_dot_d_perp;
+      if (t < 0 || t > 1) {
+        return false;
+      }
+      double u = (cx * by - cy * bx) / b_dot_d_perp;
+      if (u < 0 || u > 1) {
+        return false;
+      }
+      return true;
+    }
+
+    public double getAngle(Vertex x, Vertex y, Vertex referencePoint, int mode) {
+      x = x.sub(referencePoint);
+      y = y.sub(referencePoint);
+
+      double dot = x.dot(y);
+      double length_x = x.distance(new Vertex(.0, .0));
+      double length_y = y.distance(new Vertex(.0, .0));
+      double angle = (dot / (length_x * length_y)); // = Cos( alpha )
+
+      if(mode == 0) return Math.toDegrees(Math.acos(angle));
+      else return (Math.acos(angle));
+    }
+
+    public Vertex rotate(Vertex v, Vertex reference, double rad) {
+        Vertex vertex = v.sub(reference);
+        vertex = new Vertex(vertex.x * Math.cos(rad) - vertex.y * Math.sin(rad),
+          vertex.x * Math.sin(rad) + vertex.y * Math.cos(rad)).add(reference);
+        return vertex;
+    }
+
+    public double getAngle(Vertex x, Vertex y, Vertex referencePoint) {
+      return getAngle(x, y, referencePoint, 0);
+    }
+
     public List<Vertex> chewsRouting() {
+        int max = 7;
+        int epoche = 0;
+        Vertex s = vList.get(0);
+        Vertex t = vList.get(1);
         List<Vertex> path = new ArrayList<>();
-        Vertex current = vList.get(0);
+        Vertex current = s;
         path.add(current);
-        
+
         System.out.println("-----------------------");
-        
-        while(!current.equals(vList.get(1))) {
-          Vertex zero_y_axis = new Vertex(.1, .0);
-          Vertex current_t = vList.get(1).sub(current);
-          
-          double dot = zero_y_axis.dot(current_t);
-          double zero_y_axis_length = zero_y_axis.distance(new Vertex(.0, .0));
-          double current_t_length = current_t.distance(new Vertex(.0, .0));
-          
-          double angle_current_t = (dot / (zero_y_axis_length * current_t_length)); // = Cos( alpha )
-          double alpha_current_t = Math.toDegrees(Math.acos(angle_current_t));
-          
-          
+        Boolean finish = false;
+
+        while(!current.equals(vList.get(1)) && !finish && epoche < max) {
+          System.out.println("Epoche: " + epoche);
+          double alpha_s_t = getAngle(new Vertex(1, .0).add(s), t, s);
           List<Vertex> neighbours_rot = new ArrayList<>();
           List<Vertex> neighbours = new ArrayList<>();
-          
-          
-          System.out.println("-------------");
-          System.out.println(current);
-          
-          for(Vertex v : current.neighbours) {
-            Vertex z = v.sub(current);
-            double rad = Math.toRadians(alpha_current_t);;
-            if(current.sub(vList.get(1)).y < 0) {
+
+          double rad = Math.toRadians(alpha_s_t);
+          if(s.sub(vList.get(1)).y < 0) {
               rad = -rad;
+          }
+          Vertex current_rotated = rotate(current, s, rad);
+          Vertex current_back = rotate(current, s, -rad);
+          Vertex t_rot = rotate(vList.get(1), s, rad);
+
+          for(Vertex v : current.neighbours) {
+            Vertex v_new = rotate(v, s, rad);
+            for(Vertex n : v.neighbours) {
+              v_new.addNeighbour(rotate(n, s, rad));
             }
-            Vertex v_new = new Vertex(z.x * Math.cos(rad) - z.y * Math.sin(rad),
-              z.x * Math.sin(rad) + z.y * Math.cos(rad)).add(current);
             neighbours_rot.add(v_new);
             neighbours.add(v);
           }
-          
-          List<Vertex> neighbours_rot_archive = new ArrayList<>(neighbours_rot);          
-          
+
+
+          List<Vertex> neighbours_rot_archive = new ArrayList<>(neighbours_rot);
+
+
+          //Sortiere nach Winkel
           Collections.sort(neighbours_rot ,new Comparator<Vertex>() {
               @Override
               public int compare(Vertex v1, Vertex v2) {
-                return (v1.x < v2.x) ? -1 : 0;
+                double angle_v1 = getAngle(v1, new Vertex(0.0, 1.0).add(current_rotated), current_rotated);
+                double angle_v2 = getAngle(v2, new Vertex(0.0, 1.0).add(current_rotated), current_rotated);
+                if(v1.x < current_rotated.x) {
+                  angle_v1 = 360 - angle_v1;
+                }
+                if(v2.x < current_rotated.x) {
+                  angle_v2 = 360 - angle_v2;
+                }
+                return (angle_v1 < angle_v2 ? -1 : 0);
               }
           });
-          Vertex x_rot = neighbours_rot.get(neighbours_rot.size() - 2);
-          Vertex y_rot = neighbours_rot.get(neighbours_rot.size() - 1);
+
+          Vertex x_rot = null;
+          Vertex y_rot = null;
+
+          Boolean triangleFound = false;
+          double furthestx = 0;
+          Vertex bestTriangleX = null;
+          Vertex bestTriangleY = null;
+          for(int i = 1; i < neighbours_rot.size(); i++) {
+
+            x_rot = neighbours_rot.get(neighbours_rot.size() - (i + 1));
+            y_rot = neighbours_rot.get(neighbours_rot.size() - i);
+            if(intersects(x_rot, y_rot, s, t_rot)) {
+              if((furthestx < Math.max(x_rot.x, y_rot.x)) && (x_rot.x > current_rotated.x || y_rot.x > current_rotated.x)) {
+                bestTriangleX = x_rot;
+                bestTriangleY = y_rot;
+                furthestx = Math.max(x_rot.x, y_rot.x);
+              }
+            }
+          }
+
+
           Vertex x = null;
           Vertex y = null;
           int index = 0;
-          
+
           for(Vertex v : neighbours_rot_archive) {
-            if(v.equals(x_rot)) x = neighbours.get(index);
-            if(v.equals(y_rot)) y = neighbours.get(index);
+            if(v.equals(bestTriangleX)) x = neighbours.get(index);
+            if(v.equals(bestTriangleY)) y = neighbours.get(index);
             index++;
           }
-          
+
           for(Vertex v : current.neighbours) {
             if(v.equals(x)) {
-              x = v;              
+              x = v;
             }
             if(v.equals(y)) y = v;
             index++;
           }
-          
+
           //Is current point below or above center of circle
-          Vertex circumcenter = GetCircumcenter(current, x_rot, y_rot);
+          Vertex circumcenter = GetCircumcenter(current_rotated, bestTriangleX, bestTriangleY);
+
+          if(circumcenter.y < 0 || circumcenter.y > 1000) {
+            System.out.println(rotate(current_rotated, s, -rad));
+            System.out.println(rotate(bestTriangleX, s, -rad));
+            System.out.println(rotate(bestTriangleY, s, -rad));
+            System.out.println(current_rotated);
+            System.out.println(bestTriangleX);
+            System.out.println(bestTriangleY);
+
+          }
+
+          path.add(rotate(circumcenter, s, -rad));
           double alpha_current_x = 0;
           double alpha_current_y = 0;
-          
-          Vertex current_x = x.sub(current);
-          Vertex current_y = y.sub(current);
-          double dot_x = zero_y_axis.dot(current_x);
-          double dot_y = zero_y_axis.dot(current_y);
-          double current_x_length = current_x.distance(new Vertex(.0, .0));
-          double current_y_length = current_y.distance(new Vertex(.0, .0));
-          
-          double angle_current_x = (dot_x / (zero_y_axis_length * current_x_length)); // = Cos( alpha )
-          double angle_current_y = (dot_y / (zero_y_axis_length * current_y_length)); // = Cos( alpha )
-          
-          alpha_current_x = Math.toDegrees(Math.acos(angle_current_x));
-          alpha_current_y = Math.toDegrees(Math.acos(angle_current_y));
-          
-          System.out.println(x);
-          System.out.println(y);
-          if(x_rot.x > current.x && y_rot.x > current.x) {
-            System.out.println("true");
-          } else {
-            System.out.println("false");
+
+          alpha_current_x = getAngle(new Vertex(0.0, 1.0).add(current_rotated), bestTriangleX, current_rotated);
+          alpha_current_y = getAngle(new Vertex(0.0, 1.0).add(current_rotated), bestTriangleY, current_rotated);
+
+          if(bestTriangleX.x < current_rotated.x) {
+            // alpha_current_x = 360 - alpha_current_x;
           }
-          
-          if(current.y >= circumcenter.x) {
+          if(bestTriangleY.x < current_rotated.x) {
+            // alpha_current_y = 360 - alpha_current_y;
+          }
+
+          System.out.println(alpha_current_y);
+          System.out.println(alpha_current_x);
+
+
+          Vertex next = null;
+          if(current_rotated.y >= circumcenter.y) {
             if(alpha_current_x < alpha_current_y) {
-              current = y;
+              next = x;
             } else {
-              current = x;
+              next = y;
             }
           } else {
-            if(alpha_current_x < alpha_current_y) {
-              current = x;
+            if(alpha_current_x > alpha_current_y) {
+              next = x;
             } else {
-              current = y;
+              next = y;
             }
           }
-          System.out.println("Chosen: " + current);
+          if(!finish) current = next;
+          epoche++;
           path.add(current);
-          // current = vList.get(1);
         }
         return path;
     }
-    
+
 
     public List<Vertex> greedyRoutingPath(){
         Vertex current = vList.get(0);
@@ -285,7 +374,7 @@ public class Graph {
         Vertex best = current;
         while(!current.equals(vList.get(1))){
             for(Vertex v : current.neighbours){
-                if(best.distance(vList.get(1)) > v.distance(vList.get(1))){
+                if(best.distance(vList.get(1)) > v.distance(vList.get(1))) {
                     best = v;
                 }
             }
