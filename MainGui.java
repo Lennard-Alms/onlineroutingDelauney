@@ -73,6 +73,54 @@ public class MainGui extends Application {
 
   public void addButtons(Stage stage){
     addChooseFileButton(stage);
+    addSaveFileButton(stage);
+    addRandomPointSetButton();
+  }
+  public void addRandomPointSetButton() {
+
+  }
+
+
+
+  public void addSaveFileButton(Stage stage) {
+    Button btn = new Button("Save file...");
+    btn.setOnAction(new EventHandler<ActionEvent>() {
+      public void handle(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        File file = fileChooser.showSaveDialog(stage);
+        if(file != null){
+          SaveFile(getTextOutput(), file);
+        }
+      }
+    });
+    horizontalBox.getChildren().add(btn);
+  }
+
+  public void SaveFile(String content, File file) {
+    try {
+      FileWriter fileWriter = null;
+      fileWriter = new FileWriter(file);
+      fileWriter.write(content);
+      fileWriter.close();
+    } catch (IOException ex) {
+    }
+  }
+
+  public String getTextOutput(){
+    String output = "GraphNodesStart\n";
+    for(Vertex v : G.vList){
+      output += v.x + "\n" + v.y + "\n";
+    }
+    output += "GraphNodesEnd\n";
+    output += "RoutingNodesStart\n";
+    output += G.vList.get(0).x + "\n" + G.vList.get(0).y + "\n";
+    output += G.vList.get(1).x + "\n" + G.vList.get(1).y + "\n";
+    output += "RoutingNodesEnd\n";
+    output += "HighwayNodesStart\n";
+    output += G.vList.get(2).x + "\n" + G.vList.get(2).y + "\n";
+    output += G.vList.get(3).x + "\n" + G.vList.get(3).y + "\n";
+    output += "HighwayNodesEnd";
+    return output;
   }
 
   public void addChooseFileButton(Stage stage){
@@ -91,7 +139,7 @@ public class MainGui extends Application {
 
   public void loadFile(File file){
     PointLoader loader = new PointLoader(file);
-    coordinateSystem.getChildren().clear();
+    nodeLayer.getChildren().clear();
     setupNodeLayer();
     G.clear();
     List<Vertex> newVertices = loader.getVertices();
@@ -187,4 +235,4 @@ public class MainGui extends Application {
 
 
 
-// END
+// END must be here
