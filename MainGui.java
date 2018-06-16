@@ -21,6 +21,7 @@ import java.util.Hashtable;
 import javafx.stage.FileChooser;
 import javafx.scene.text.*;
 import java.text.DecimalFormat;
+import javafx.scene.layout.Pane;
 
 
 public class MainGui extends Application {
@@ -29,9 +30,10 @@ public class MainGui extends Application {
   HBox rootBox = new HBox();
   VBox verticalBox = new VBox();
   HBox horizontalBox = new HBox();
-  Group coordinateSystem = new Group();
-  Group nodeLayer = new Group();
-  Group edgeLayer = new Group();
+  Pane coordinateSystem = new Pane();
+  Pane nodeLayer = new Pane();
+  Pane topLayer = new Pane();
+  Pane edgeLayer = new Pane();
   VBox informationBox = new VBox();
   Scene scene = new Scene(rootBox, 900, 627);
 
@@ -45,6 +47,7 @@ public class MainGui extends Application {
     addButtons(stage);
     stage.setScene(scene);
     coordinateSystem.getChildren().add(edgeLayer);
+    coordinateSystem.getChildren().add(topLayer);
     coordinateSystem.getChildren().add(nodeLayer);
     verticalBox.getChildren().add(coordinateSystem);
     verticalBox.getChildren().add(horizontalBox);
@@ -136,8 +139,9 @@ public class MainGui extends Application {
     }
     if(G.V.size() > 1){
       informationBox.getChildren().clear();
-      drawRoutingPath(G.chewsRouting(), Color.RED, 3, "CHEW");
-      // drawRoutingPath(G.laubentahlschesRouting(), Color.RED, 3, "LAUB");
+      topLayer.getChildren().clear();
+      drawRoutingPath(G.laubentahlschesRouting(), Color.VIOLET, 4, "LAUB");
+      drawRoutingPath(G.chewsNew(topLayer), Color.RED, 3, "CHEW");
       drawRoutingPath(G.optimalRoutingPath(), Color.LAWNGREEN, 2, "Djiks");
       drawRoutingPath(G.greedyRoutingPath(), Color.AQUA, 1, "Greed");
     }

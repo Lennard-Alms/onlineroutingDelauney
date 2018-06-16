@@ -7,6 +7,47 @@ import java.util.Comparator;
 import java.util.Collections;
 import java.lang.Math;
 
+
+
+
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Polygon;
+import javafx.scene.Group;
+import javafx.scene.paint.Color;
+import javafx.event.EventHandler;
+import javafx.event.ActionEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.shape.Rectangle;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import javafx.scene.control.Button;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
+import java.io.*;
+import java.util.Hashtable;
+import javafx.stage.FileChooser;
+import javafx.scene.text.*;
+import java.text.DecimalFormat;
+import javafx.scene.layout.Pane;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public class Graph {
 
     public List<Vertex> vList = new ArrayList<>();
@@ -125,6 +166,115 @@ public class Graph {
         }
         return path;
     }
+
+    public List<Vertex> chewsNew(Pane edgeLayer){
+        /*
+        find next triangle nodes v,w
+        find circle
+        find leftmost point
+        find intersection point
+        decide where to route
+         */
+        List<Vertex> path = new ArrayList<>();
+        Vertex s = vList.get(0);
+        Vertex t = vList.get(1);
+        // Line st = new Line(s.x, s.y, t.x, t.y);
+        // st.setStroke(Color.BROWN);
+        // edgeLayer.getChildren().add(st);
+        Vertex current = s;
+        path.add(current);
+        int i = 0;
+        while(!current.equals(t) && i < 10){
+            i++;
+            Vertex x = null;
+            Vertex y = null;
+            for(Vertex v : current.neighbours){
+                if(v.equals(t)){
+                    path.add(t);
+                    return path;
+                }
+                for(Vertex w : current.neighbours){
+                    if(v.neighbours.contains(w)){
+                        if(intersects(s,t,v,w)){
+                            if(x == null){
+                                x = v;
+                                y = w;
+                            } else if(intersectionDist(s,t,x,y) < intersectionDist(s,t,v,w)){
+                                x = v;
+                                y = w;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Line chosenpartners = new Line(x.x, x.y, y.x, y.y);
+            // chosenpartners.setStroke(Color.BLUE);
+            // edgeLayer.getChildren().add(chosenpartners);
+            Vertex cc = GetCircumcenter(current, x, y);
+
+            // Circle node = new Circle();
+            // node.setCenterX(cc.x);
+            // node.setCenterY(cc.y);
+            // node.setRadius(cc.distance(current));
+            // node.setFill(Color.color(0,0,0,0));
+            // node.setStroke(Color.BLACK);
+            // node.setStrokeWidth(1);
+            // edgeLayer.getChildren().add(node);
+            Vertex leftmost = cc.add(s.sub(t).mult(1/s.sub(t).mag()).mult(cc.distance(current)));
+            Vertex rightmostInter = findRightIntersect(s,t,cc,current);
+            // Line gg = new Line(leftmost.x, leftmost.y, rightmostInter.x, rightmostInter.y);
+            // gg.setStroke(Color.VIOLET);
+            // edgeLayer.getChildren().add(gg);
+            if(upordown(leftmost, rightmostInter, current) == upordown(leftmost, rightmostInter, x)){
+                current = x;
+            } else {
+                current = y;
+            }
+            path.add(current);
+        }
+        return path;
+    }
+
+
+
+
+    public int upordown(Vertex l, Vertex r, Vertex t){
+        Vertex lin = r.sub(l);
+        Vertex orth = new Vertex(lin.y, -lin.x);
+        double angle = getAngle(orth, t, l);
+        if(orth.dot(t.sub(l)) == 0){
+            return 1;
+        }
+        if(angle <= 90){
+            return 1;
+        } else{
+            return -1;
+        }
+    }
+
+
+    public Vertex findRightIntersect(Vertex s, Vertex t, Vertex cc, Vertex current){
+        Vertex sToT = t.sub(s);
+        Vertex sToCC = cc.sub(s);
+        double cp = sToCC.dot(sToT)/sToT.dot(sToT);
+        Vertex proj = sToT.mult(cp);
+        double d = proj.distance(sToCC);
+        double r = cc.distance(current);
+        double plus = Math.sqrt(r*r - d*d);
+        Vertex dest = proj.add(sToT.mult(1/sToT.mag()).mult(plus));
+        return s.add(dest);
+
+    }
+    public double intersectionDist(Vertex p,Vertex x,Vertex q,Vertex y){
+        Vertex s = y.sub(q);
+        Vertex r = x.sub(p);
+        return s.cross(q.sub(p)) / s.cross(r);
+    }
+
+
+
+
 
     public double Slope(Vertex from, Vertex to) {
   		return (to.y - from.y) / (to.x - from.x);
