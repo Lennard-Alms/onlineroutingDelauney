@@ -167,25 +167,3 @@ public class MainGui extends Application {
   }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// END
