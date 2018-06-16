@@ -81,8 +81,6 @@ public class MainGui extends Application {
 
   }
 
-
-
   public void addSaveFileButton(Stage stage) {
     Button btn = new Button("Save file...");
     btn.setOnAction(new EventHandler<ActionEvent>() {
@@ -146,7 +144,10 @@ public class MainGui extends Application {
     List<Vertex> newVertices = loader.getVertices();
     for(Vertex v : newVertices) {
       addNode(v.x, v.y);
+      System.out.println(v.x);
+      System.out.println(v.y);
     }
+    System.out.println("-");
   }
 
   public void addNode(double x, double y) {
@@ -197,7 +198,7 @@ public class MainGui extends Application {
   }
 
   public void drawRoutingPath(List<Vertex> path, Color c, int width, String name){
-    double dist = 0;
+    double dist = 0.0;
     for(int i = 0; i < path.size() - 1; i++){
       dist += path.get(i).distance(path.get(i+1));
       Line line = new Line(path.get(i).x, path.get(i).y, path.get(i+1).x, path.get(i+1).y);

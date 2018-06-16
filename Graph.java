@@ -25,6 +25,7 @@ public class Graph {
     public void calculateTriangulation() {
         for(Vertex v : V) {
             v.neighbours.clear();
+            v.nList.clear();
         }
         if(V.size() > 2) {
             DelaunayTriangulator triangulator = new DelaunayTriangulator(vList);
@@ -122,14 +123,14 @@ public class Graph {
             i++;
             Vertex x = null;
             Vertex y = null;
-            for(Vertex v : current.neighbours) {
+            for(Vertex v : current.nList) {
 
                 if(v.equals(t)) {
                     path.add(t);
                     return path;
                 }
 
-                for(Vertex w : current.neighbours) {
+                for(Vertex w : current.nList) {
                     if(v.neighbours.contains(w)) {
                         if(intersects(s,t,v,w)) {
                             if(x == null) {
@@ -245,13 +246,6 @@ public class Graph {
         return false;
       }
       return true;
-    }
-
-    public Vertex rotate(Vertex v, Vertex reference, double rad) {
-        Vertex vertex = v.sub(reference);
-        vertex = new Vertex(vertex.x * Math.cos(rad) - vertex.y * Math.sin(rad),
-          vertex.x * Math.sin(rad) + vertex.y * Math.cos(rad)).add(reference);
-        return vertex;
     }
 
 

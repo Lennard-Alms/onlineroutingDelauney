@@ -1,7 +1,9 @@
 import java.util.HashSet;
+import java.util.ArrayList;
+
 
 public class Vertex {
-
+    public ArrayList<Vertex> nList = new ArrayList<>();
     public HashSet<Vertex> neighbours = new HashSet<>();
     public double x;
     public double y;
@@ -14,6 +16,7 @@ public class Vertex {
 
     public void addNeighbour(Vertex v) {
         neighbours.add(v);
+        nList.add(v);
     }
 
     public double distance(Vertex v) {
