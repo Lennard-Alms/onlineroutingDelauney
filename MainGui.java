@@ -37,6 +37,7 @@ public class MainGui extends Application {
   Pane edgeLayer = new Pane();
   VBox informationBox = new VBox();
   Scene scene = new Scene(rootBox, 900, 627);
+  int generationCount = 0;
 
   public static void main(String[] args) {
     launch(args);
@@ -76,9 +77,58 @@ public class MainGui extends Application {
     addChooseFileButton(stage);
     addSaveFileButton(stage);
     addRandomPointSetButton();
+    addClearButton();
   }
-  public void addRandomPointSetButton() {
+  public void addRandomPointSetButton() { // dies after 30 or so iterations
+    Button btn = new Button("Random Set");
+    btn.setOnAction(new EventHandler<ActionEvent>() {
+      public void handle(ActionEvent event) {
+        if(generationCount < 30){
+          generationCount++;
+          nodeLayer.getChildren().clear();
+          setupNodeLayer();
+          G.clear();
+          Random rand = new Random();
+          switch(rand.nextInt(3)){
+          case 0:
+              addNode(20,20);
+              addNode(780,580);
+              break;
+          case 1:
+              addNode(780,580);
+              addNode(20,20);
+              break;
+          case 2:
+              addNode(20,580);
+              addNode(780,20);
+              break;
+          case 3:
+              addNode(780,20);
+              addNode(20,580);
+              break;
+          }
+          for(int i = 0; i < 48; i++){
+            addNode(rand.nextInt(760)+20,rand.nextInt(560)+20);
+          }
+        }
+      }
+    });
+    horizontalBox.getChildren().add(btn);
+  }
 
+  public void addClearButton() {
+    Button btn = new Button("Clear");
+    btn.setOnAction(new EventHandler<ActionEvent>() {
+      public void handle(ActionEvent event) {
+        nodeLayer.getChildren().clear();
+        informationBox.getChildren().clear();
+        topLayer.getChildren().clear();
+        edgeLayer.getChildren().clear();
+        setupNodeLayer();
+        G.clear();
+      }
+    });
+    horizontalBox.getChildren().add(btn);
   }
 
   public void addSaveFileButton(Stage stage) {
@@ -108,16 +158,16 @@ public class MainGui extends Application {
   public String getTextOutput(){
     String output = "GraphNodesStart\n";
     for(Vertex v : G.vList){
-      output += v.x + "\n" + v.y + "\n";
+      output += (v.x - 400) + "\n" + (300 - v.y) + "\n";
     }
     output += "GraphNodesEnd\n";
     output += "RoutingNodesStart\n";
-    output += G.vList.get(0).x + "\n" + G.vList.get(0).y + "\n";
-    output += G.vList.get(1).x + "\n" + G.vList.get(1).y + "\n";
+    output += (G.vList.get(0).x - 400) + "\n" + (300 - G.vList.get(0).y) + "\n";
+    output += (G.vList.get(1).x - 400) + "\n" + (300 - G.vList.get(1).y) + "\n";
     output += "RoutingNodesEnd\n";
     output += "HighwayNodesStart\n";
-    output += G.vList.get(2).x + "\n" + G.vList.get(2).y + "\n";
-    output += G.vList.get(3).x + "\n" + G.vList.get(3).y + "\n";
+    output += (G.vList.get(2).x - 400) + "\n" + (300 - G.vList.get(2).y) + "\n";
+    output += (G.vList.get(3).x - 400) + "\n" + (300 - G.vList.get(3).y) + "\n";
     output += "HighwayNodesEnd";
     return output;
   }
@@ -188,7 +238,7 @@ public class MainGui extends Application {
       informationBox.getChildren().clear();
       topLayer.getChildren().clear();
       drawRoutingPath(G.laubenthalschesRouting(), Color.VIOLET, 4, "LAUB");
-      drawRoutingPath(G.chewsNew(), Color.RED, 3, "CHEW");
+      //drawRoutingPath(G.chewsNew(), Color.RED, 3, "CHEW");
       drawRoutingPath(G.optimalRoutingPath(), Color.LAWNGREEN, 2, "Djiks");
       drawRoutingPath(G.greedyRoutingPath(), Color.AQUA, 1, "Greedy");
     }

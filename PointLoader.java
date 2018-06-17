@@ -30,7 +30,7 @@ public class PointLoader {
         List<Vertex> pointSet = new ArrayList<>();
 
         for(int i = 1; i < lines.length; i += 2){
-            Vertex point = new Vertex(Double.parseDouble(lines[i])/* + 400.0*/, /*300.0 -*/ Double.parseDouble(lines[i+1]));
+            Vertex point = new Vertex(Double.parseDouble(lines[i]) + 400.0, 300.0 - Double.parseDouble(lines[i+1]));
             pointSet.add(point);
         }
 

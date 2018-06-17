@@ -13,7 +13,6 @@ public class Graph {
     public HashSet<Vertex> V = new HashSet<>();
 
     public Graph() {
-
     }
 
     public void addVertex(Vertex v) {
