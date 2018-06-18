@@ -50,6 +50,8 @@ public class Graph {
     public void clear() {
         vList.clear();
         V.clear();
+        // vList = new ArrayList<>();
+        // V = new HashSet<>();
     }
 
 

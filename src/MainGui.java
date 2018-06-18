@@ -83,7 +83,7 @@ public class MainGui extends Application {
     Button btn = new Button("Random Set");
     btn.setOnAction(new EventHandler<ActionEvent>() {
       public void handle(ActionEvent event) {
-        if(generationCount < 30){
+        // if(generationCount < 30){
           generationCount++;
           nodeLayer.getChildren().clear();
           setupNodeLayer();
@@ -110,7 +110,7 @@ public class MainGui extends Application {
           for(int i = 0; i < 48; i++){
             addNode(rand.nextInt(760)+20,rand.nextInt(560)+20);
           }
-        }
+        // }
       }
     });
     horizontalBox.getChildren().add(btn);
@@ -238,7 +238,7 @@ public class MainGui extends Application {
       informationBox.getChildren().clear();
       topLayer.getChildren().clear();
       drawRoutingPath(G.laubenthalschesRouting(), Color.VIOLET, 4, "LAUB");
-      //drawRoutingPath(G.chewsNew(), Color.RED, 3, "CHEW");
+      drawRoutingPath(G.chewsNew(), Color.RED, 3, "CHEW");
       drawRoutingPath(G.optimalRoutingPath(), Color.LAWNGREEN, 2, "Djiks");
       drawRoutingPath(G.greedyRoutingPath(), Color.AQUA, 1, "Greedy");
     }
