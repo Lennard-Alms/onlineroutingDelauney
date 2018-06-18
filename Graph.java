@@ -21,6 +21,14 @@ public class Graph {
         calculateTriangulation();
     }
 
+    public void addVertex(Vertex v, Boolean calcTriang) {
+        V.add(v);
+        vList.add(v);
+        if(calcTriang) {
+            calculateTriangulation();
+        }
+    }
+
     public void calculateTriangulation() {
         for(Vertex v : V) {
             v.neighbours.clear();
@@ -54,7 +62,7 @@ public class Graph {
 
 
 
-    public List<Vertex> laubenthalschesRouting() {
+    public List<Vertex> laubenthalschesRouting() { // wenn zwei beschissene winkel dann nimm die kürzere kante
         List<Vertex> path = new ArrayList<>();
         Vertex current = vList.get(0);
         path.add(current);

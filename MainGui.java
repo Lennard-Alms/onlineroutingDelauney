@@ -67,7 +67,7 @@ public class MainGui extends Application {
     r.setFill(Color.color(0,0,0,0));
     r.setOnMousePressed(new EventHandler<MouseEvent>() {
       public void handle(MouseEvent event) {
-        addNode(event.getX(), event.getY());
+        addNode(event.getX(), event.getY(), true);
       }
     });
     nodeLayer.getChildren().add(r);
@@ -83,7 +83,7 @@ public class MainGui extends Application {
     Button btn = new Button("Random Set");
     btn.setOnAction(new EventHandler<ActionEvent>() {
       public void handle(ActionEvent event) {
-        if(generationCount < 30){
+         if(generationCount < 30){
           generationCount++;
           nodeLayer.getChildren().clear();
           setupNodeLayer();
@@ -91,26 +91,28 @@ public class MainGui extends Application {
           Random rand = new Random();
           switch(rand.nextInt(3)){
           case 0:
-              addNode(20,20);
-              addNode(780,580);
+              addNode(20,20, false);
+              addNode(780,580, false);
               break;
           case 1:
-              addNode(780,580);
-              addNode(20,20);
+              addNode(780,580, false);
+              addNode(20,20, false);
               break;
           case 2:
-              addNode(20,580);
-              addNode(780,20);
+              addNode(20,580, false);
+              addNode(780,20, false);
               break;
           case 3:
-              addNode(780,20);
-              addNode(20,580);
+              addNode(780,20, false);
+              addNode(20,580, false);
               break;
           }
-          for(int i = 0; i < 48; i++){
-            addNode(rand.nextInt(760)+20,rand.nextInt(560)+20);
+          for(int i = 0; i < 50; i++){
+            addNode(rand.nextInt(760)+20,rand.nextInt(560)+20, false);
           }
-        }
+         }
+         G.calculateTriangulation();
+         updateEdgesAndRoute();
       }
     });
     horizontalBox.getChildren().add(btn);
@@ -193,17 +195,19 @@ public class MainGui extends Application {
     G.clear();
     List<Vertex> newVertices = loader.getVertices();
     for(Vertex v : newVertices) {
-      addNode(v.x, v.y);
+      addNode(v.x, v.y, false);
     }
+    G.calculateTriangulation();
+    updateEdgesAndRoute();
   }
 
-  public void addNode(double x, double y) {
+  public void addNode(double x, double y, boolean calcTriang) {
     Circle node = new Circle();
     node.setCenterX(x);
     node.setCenterY(y);
     node.setRadius(4.0);
     int position = G.vList.size();
-    G.addVertex(new Vertex(x,y));
+    G.addVertex(new Vertex(x,y), calcTriang);
     if(position == 0){
       node.setFill(Color.LAWNGREEN);
     } else if (position == 1){
@@ -219,15 +223,17 @@ public class MainGui extends Application {
           G.vList.get(position).x = event.getSceneX();
           G.vList.get(position).y = event.getSceneY();
           G.calculateTriangulation();
-          updateEdges();
+          updateEdgesAndRoute();
         }
       }
     });
     nodeLayer.getChildren().add(node);
-    updateEdges();
+    if(calcTriang){
+      updateEdgesAndRoute();
+    }
   }
 
-  public void updateEdges() {
+  public void updateEdgesAndRoute() {
     edgeLayer.getChildren().clear();
     for (Vertex v : G.V) {
       for (Vertex w : v.neighbours) {
@@ -238,7 +244,7 @@ public class MainGui extends Application {
       informationBox.getChildren().clear();
       topLayer.getChildren().clear();
       drawRoutingPath(G.laubenthalschesRouting(), Color.VIOLET, 4, "LAUB");
-      //drawRoutingPath(G.chewsNew(), Color.RED, 3, "CHEW");
+      drawRoutingPath(G.chewsNew(), Color.RED, 3, "CHEW");
       drawRoutingPath(G.optimalRoutingPath(), Color.LAWNGREEN, 2, "Djiks");
       drawRoutingPath(G.greedyRoutingPath(), Color.AQUA, 1, "Greedy");
     }
