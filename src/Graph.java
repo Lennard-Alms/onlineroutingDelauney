@@ -7,6 +7,16 @@ import java.util.Comparator;
 import java.util.Collections;
 import java.lang.Math;
 
+
+
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Circle;
+import javafx.scene.paint.Color;
+import javafx.scene.layout.Pane;
+
+
+
+
 public class Graph {
 
     public List<Vertex> vList = new ArrayList<>();
@@ -121,11 +131,18 @@ public class Graph {
         return path;
     }
 
-    public List<Vertex> chewsNew() {
+    public List<Vertex> chewsNew(Pane topLayer) {
         List<Vertex> path = new ArrayList<>();
         Vertex s = vList.get(0);
         Vertex t = vList.get(1);
         Vertex current = s;
+
+
+        Line st = new Line(s.x, s.y, t.x, t.y);
+        st.setStroke(Color.BROWN);
+        topLayer.getChildren().add(st);
+
+
         path.add(current);
         int i = 0;
         while(!current.equals(t) && i < 1000) {
@@ -154,9 +171,39 @@ public class Graph {
                 }
             }
 
+
+
             Vertex cc = GetCircumcenter(current, x, y);
             Vertex leftmost = cc.add(s.sub(t).mult(1/s.sub(t).mag()).mult(cc.distance(current)));
             Vertex rightmostInter = findRightIntersect(s,t,cc,current);
+
+
+
+
+
+            Line gg = new Line(leftmost.x, leftmost.y, rightmostInter.x, rightmostInter.y);
+            gg.setStroke(Color.VIOLET);
+            topLayer.getChildren().add(gg);
+
+
+
+            Line chosenpartners = new Line(x.x, x.y, y.x, y.y);
+            chosenpartners.setStroke(Color.BLUE);
+            topLayer.getChildren().add(chosenpartners);
+
+
+
+            Circle node = new Circle();
+            node.setCenterX(cc.x);
+            node.setCenterY(cc.y);
+            node.setRadius(cc.distance(current));
+            node.setFill(Color.color(0,0,0,0));
+            node.setStroke(Color.BLACK);
+            node.setStrokeWidth(1);
+            topLayer.getChildren().add(node);
+
+
+
 
             if(Geometry.comparePointToLine(leftmost, rightmostInter, current) == Geometry.comparePointToLine(leftmost, rightmostInter, x)) {
                 current = x;
