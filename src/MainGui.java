@@ -58,6 +58,81 @@ public class MainGui extends Application {
     stage.show();
   }
 
+
+  public void calculateWorstCase() {
+    Random rand = new Random();
+    double worst_laub_euclid = 0;
+    double worst_dijkstra_euclid = 0;
+    double worst_chew_euclid = 0;
+    double worst_laub_dijkstra = 0;
+    double worst_chew_dijkstra = 0;
+    for(int index = 0; index < 500; index++) {
+      G.clear();
+      for(int k = 0; k < 20; k++) {
+        switch(rand.nextInt(3)) {
+        case 0:
+            addNode(20,20, false);
+            addNode(780,580, false);
+            break;
+        case 1:
+            addNode(780,580, false);
+            addNode(20,20, false);
+            break;
+        case 2:
+            addNode(20,580, false);
+            addNode(780,20, false);
+            break;
+        case 3:
+            addNode(780,20, false);
+            addNode(20,580, false);
+            break;
+        }
+      }
+      List<Vertex> path_laubenthal = G.laubenthalschesRouting();
+      List<Vertex> path_greedy = G.chewsNew();
+      List<Vertex> path_dijkstra = G.optimalRoutingPath();
+      double dist_laubenthal = 0;
+      double dist_greedy = 0;
+      double dist_dijkstra = 0;
+      for(int i = 0; i < path_laubenthal.size() - 1; i++) {
+        dist_laubenthal += path_laubenthal.get(i).distance(path_laubenthal.get(i+1));
+      }
+      for(int i = 0; i < path_greedy.size() - 1; i++) {
+        dist_greedy += path_greedy.get(i).distance(path_greedy.get(i+1));
+      }
+      for(int i = 0; i < path_dijkstra.size() - 1; i++) {
+        dist_dijkstra += path_dijkstra.get(i).distance(path_dijkstra.get(i+1));
+      }
+
+      double laub_euclid = dist_laubenthal / G.vList.get(0).distance(G.vList.get(1));
+      double dijkstra_euclid = dist_dijkstra / G.vList.get(0).distance(G.vList.get(1));
+      double chew_euclid = dist_chew / G.vList.get(0).distance(G.vList.get(1));
+      double laub_dijkstra = dist_laubenthal / dist_dijkstra;
+      double chew_dijkstra = dist_chew / dist_dijkstra;
+
+
+      if(worst_laub_euclid < laub_euclid) worst_laub_euclid = laub_euclid;
+      if(worst_dijkstra_euclid < dijkstra_euclid) worst_dijkstra_euclid = dijkstra_euclid;
+      if(worst_chew_euclid < chew_euclid) worst_chew_euclid = chew_euclid;
+      if(worst_laub_dijkstra < laub_dijkstra) worst_laub_dijkstra = laub_dijkstra;
+      if(worst_chew_dijkstra < chew_dijkstra) worst_chew_dijkstra = chew_dijkstra;
+
+    }
+
+    System.out.println("WORST CASES");
+    System.out.println("Laubenthalsches Routing");
+    System.out.println("Euclid: " + worst_laub_euclid);
+    System.out.println("Dijkstra: " + worst_laub_dijkstra);
+    System.out.println("");
+    System.out.println("Chews Routing Algorithm");
+    System.out.println("Euclid: " + worst_chew_euclid);
+    System.out.println("Dijkstra: " + worst_chew_dijkstra);
+    System.out.println("");
+    System.out.println("Dijkstra: " + worst_dijkstra_euclid);
+
+
+  }
+
   public void setupNodeLayer(){
     Rectangle r = new Rectangle();
     r.setX(0);
@@ -158,18 +233,18 @@ public class MainGui extends Application {
   }
 
   public String getTextOutput(){
-    String output = "GraphNodesStart\n";
+    String output = "GraphNodesStart\r\n";
     for(Vertex v : G.vList){
-      output += (v.x - 400) + "\n" + (300 - v.y) + "\n";
+      output += (v.x - 400) + "\r\n" + (300 - v.y) + "\r\n";
     }
-    output += "GraphNodesEnd\n";
-    output += "RoutingNodesStart\n";
-    output += (G.vList.get(0).x - 400) + "\n" + (300 - G.vList.get(0).y) + "\n";
-    output += (G.vList.get(1).x - 400) + "\n" + (300 - G.vList.get(1).y) + "\n";
-    output += "RoutingNodesEnd\n";
-    output += "HighwayNodesStart\n";
-    output += (G.vList.get(2).x - 400) + "\n" + (300 - G.vList.get(2).y) + "\n";
-    output += (G.vList.get(3).x - 400) + "\n" + (300 - G.vList.get(3).y) + "\n";
+    output += "GraphNodesEnd\r\n";
+    output += "RoutingNodesStart\r\n";
+    output += (G.vList.get(0).x - 400) + "\r\n" + (300 - G.vList.get(0).y) + "\r\n";
+    output += (G.vList.get(1).x - 400) + "\r\n" + (300 - G.vList.get(1).y) + "\r\n";
+    output += "RoutingNodesEnd\r\n";
+    output += "HighwayNodesStart\r\n";
+    output += (G.vList.get(2).x - 400) + "\r\n" + (300 - G.vList.get(2).y) + "\r\n";
+    output += (G.vList.get(3).x - 400) + "\r\n" + (300 - G.vList.get(3).y) + "\r\n";
     output += "HighwayNodesEnd";
     return output;
   }
