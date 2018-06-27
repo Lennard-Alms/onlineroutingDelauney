@@ -38,6 +38,7 @@ public class MainGui extends Application {
   VBox informationBox = new VBox();
   Scene scene = new Scene(rootBox, 900, 627);
   int generationCount = 0;
+  Boolean addOnClick = true;
 
   public static void main(String[] args) {
     launch(args);
@@ -142,7 +143,9 @@ public class MainGui extends Application {
     r.setFill(Color.color(0,0,0,0));
     r.setOnMousePressed(new EventHandler<MouseEvent>() {
       public void handle(MouseEvent event) {
-        addNode(event.getX(), event.getY(), true);
+        if(addOnClick){
+          addNode(event.getX(), event.getY(), true);
+        }
       }
     });
     nodeLayer.getChildren().add(r);
@@ -153,7 +156,25 @@ public class MainGui extends Application {
     addSaveFileButton(stage);
     addRandomPointSetButton();
     addClearButton();
+    addOnClickToggleButton();
   }
+  public void addOnClickToggleButton() {
+    Button btn = new Button("No new Nodes");
+    btn.setOnAction(new EventHandler<ActionEvent>() {
+      public void handle(ActionEvent event) {
+        if(addOnClick){
+          btn.setText("New Nodes");
+          addOnClick = false;
+        } else {
+          btn.setText("No new Nodes");
+          addOnClick = true;
+        }
+      }
+    });
+    horizontalBox.getChildren().add(btn);
+  }
+
+
   public void addRandomPointSetButton() { // dies after 30 or so iterations
     Button btn = new Button("Random Set");
     btn.setOnAction(new EventHandler<ActionEvent>() {
@@ -318,10 +339,10 @@ public class MainGui extends Application {
     if(G.V.size() > 1){
       informationBox.getChildren().clear();
       topLayer.getChildren().clear();
-      drawRoutingPath(G.laubenthalschesRouting(), Color.VIOLET, 4, "LAUB");
-      drawRoutingPath(G.chewsNew(), Color.RED, 3, "CHEW");
-      drawRoutingPath(G.optimalRoutingPath(), Color.LAWNGREEN, 2, "Djiks");
-      drawRoutingPath(G.greedyRoutingPath(), Color.AQUA, 1, "Greedy");
+       drawRoutingPath(G.laubenthalschesRouting(), Color.VIOLET, 4, "LAUB");
+       // drawRoutingPath(G.chewsNew(topLayer), Color.RED, 3, "CHEW");
+      // drawRoutingPath(G.optimalRoutingPath(), Color.LAWNGREEN, 2, "Djiks");
+       drawRoutingPath(G.greedyRoutingPath(), Color.AQUA, 1, "Greedy");
     }
   }
 
