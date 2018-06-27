@@ -131,17 +131,11 @@ public class Graph {
         return path;
     }
 
-    public List<Vertex> chewsNew(Pane topLayer) {
+    public List<Vertex> chewsNew() {
         List<Vertex> path = new ArrayList<>();
         Vertex s = vList.get(0);
         Vertex t = vList.get(1);
         Vertex current = s;
-
-
-        Line st = new Line(s.x, s.y, t.x, t.y);
-        st.setStroke(Color.BROWN);
-        topLayer.getChildren().add(st);
-
 
         path.add(current);
         int i = 0;
@@ -172,45 +166,24 @@ public class Graph {
             }
 
 
-
-            Vertex cc = GetCircumcenter(current, x, y);
-            Vertex leftmost = cc.add(s.sub(t).mult(1/s.sub(t).mag()).mult(cc.distance(current)));
-            Vertex rightmostInter = findRightIntersect(s,t,cc,current);
-
-
-
-
-
-            Line gg = new Line(leftmost.x, leftmost.y, rightmostInter.x, rightmostInter.y);
-            gg.setStroke(Color.VIOLET);
-            topLayer.getChildren().add(gg);
-
-
-
-            Line chosenpartners = new Line(x.x, x.y, y.x, y.y);
-            chosenpartners.setStroke(Color.BLUE);
-            topLayer.getChildren().add(chosenpartners);
-
-
-
-            Circle node = new Circle();
-            node.setCenterX(cc.x);
-            node.setCenterY(cc.y);
-            node.setRadius(cc.distance(current));
-            node.setFill(Color.color(0,0,0,0));
-            node.setStroke(Color.BLACK);
-            node.setStrokeWidth(1);
-            topLayer.getChildren().add(node);
+            if(x != null && y != null) {
+              Vertex cc = GetCircumcenter(current, x, y);
+              Vertex leftmost = cc.add(s.sub(t).mult(1/s.sub(t).mag()).mult(cc.distance(current)));
+              Vertex rightmostInter = findRightIntersect(s,t,cc,current);
 
 
 
 
-            if(Geometry.comparePointToLine(leftmost, rightmostInter, current) == Geometry.comparePointToLine(leftmost, rightmostInter, x)) {
-                current = x;
+              if(Geometry.comparePointToLine(leftmost, rightmostInter, current) == Geometry.comparePointToLine(leftmost, rightmostInter, x)) {
+                  current = x;
+              } else {
+                  current = y;
+              }
+              path.add(current);
             } else {
-                current = y;
+              current = vList.get(1);
+              path.add(current);
             }
-            path.add(current);
         }
         return path;
     }

@@ -67,39 +67,32 @@ public class MainGui extends Application {
     double worst_chew_euclid = 0;
     double worst_laub_dijkstra = 0;
     double worst_chew_dijkstra = 0;
-    for(int index = 0; index < 500; index++) {
+
+    String worstVerticesLaub = "";
+    String worstVerticesChew = "";
+
+    for(int index = 0; index < 10000; index++) {
       G.clear();
-      for(int k = 0; k < 20; k++) {
-        switch(rand.nextInt(3)) {
-        case 0:
-            addNode(20,20, false);
-            addNode(780,580, false);
-            break;
-        case 1:
-            addNode(780,580, false);
-            addNode(20,20, false);
-            break;
-        case 2:
-            addNode(20,580, false);
-            addNode(780,20, false);
-            break;
-        case 3:
-            addNode(780,20, false);
-            addNode(20,580, false);
-            break;
-        }
+      G.addVertex(new Vertex(150, 300));
+      G.addVertex(new Vertex(650, 300));
+
+      for(int k = 0; k < 50; k++) {
+        G.addVertex(new Vertex(rand.nextDouble() * 800, rand.nextDouble() * 600));
       }
+      G.calculateTriangulation();
       List<Vertex> path_laubenthal = G.laubenthalschesRouting();
-      List<Vertex> path_greedy = G.chewsNew();
+      List<Vertex> path_chews = G.greedyRoutingPath();
+      // List<Vertex> path_chews = new ArrayList<>();
       List<Vertex> path_dijkstra = G.optimalRoutingPath();
       double dist_laubenthal = 0;
       double dist_greedy = 0;
+      double dist_chew = 0;
       double dist_dijkstra = 0;
       for(int i = 0; i < path_laubenthal.size() - 1; i++) {
         dist_laubenthal += path_laubenthal.get(i).distance(path_laubenthal.get(i+1));
       }
-      for(int i = 0; i < path_greedy.size() - 1; i++) {
-        dist_greedy += path_greedy.get(i).distance(path_greedy.get(i+1));
+      for(int i = 0; i < path_chews.size() - 1; i++) {
+        dist_chew += path_chews.get(i).distance(path_chews.get(i+1));
       }
       for(int i = 0; i < path_dijkstra.size() - 1; i++) {
         dist_dijkstra += path_dijkstra.get(i).distance(path_dijkstra.get(i+1));
@@ -112,11 +105,18 @@ public class MainGui extends Application {
       double chew_dijkstra = dist_chew / dist_dijkstra;
 
 
-      if(worst_laub_euclid < laub_euclid) worst_laub_euclid = laub_euclid;
+      if(worst_laub_euclid < laub_euclid) {
+        worst_laub_euclid = laub_euclid;
+        worstVerticesLaub = getTextOutput();
+      }
       if(worst_dijkstra_euclid < dijkstra_euclid) worst_dijkstra_euclid = dijkstra_euclid;
-      if(worst_chew_euclid < chew_euclid) worst_chew_euclid = chew_euclid;
+      if(worst_chew_euclid < chew_euclid) {
+        worst_chew_euclid = chew_euclid;
+        worstVerticesChew = getTextOutput();
+      }
       if(worst_laub_dijkstra < laub_dijkstra) worst_laub_dijkstra = laub_dijkstra;
       if(worst_chew_dijkstra < chew_dijkstra) worst_chew_dijkstra = chew_dijkstra;
+
 
     }
 
@@ -129,9 +129,10 @@ public class MainGui extends Application {
     System.out.println("Euclid: " + worst_chew_euclid);
     System.out.println("Dijkstra: " + worst_chew_dijkstra);
     System.out.println("");
-    System.out.println("Dijkstra: " + worst_dijkstra_euclid);
+    System.out.println("DIJKSTRA: " + worst_dijkstra_euclid);
 
-
+    saveFile(worstVerticesLaub, "worstcase.graph");
+    saveFile(worstVerticesChew, "worstcase_chew.graph");
   }
 
   public void setupNodeLayer(){
@@ -157,6 +158,7 @@ public class MainGui extends Application {
     addRandomPointSetButton();
     addClearButton();
     addOnClickToggleButton();
+    addWorstCaseButton();
   }
   public void addOnClickToggleButton() {
     Button btn = new Button("No new Nodes");
@@ -243,6 +245,15 @@ public class MainGui extends Application {
     horizontalBox.getChildren().add(btn);
   }
 
+  public void saveFile(String content, String filename) {
+    try {
+      BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
+      writer.write(content);
+
+      writer.close();
+    } catch(Exception e) {}
+  }
+
   public void SaveFile(String content, File file) {
     try {
       FileWriter fileWriter = null;
@@ -279,6 +290,16 @@ public class MainGui extends Application {
         if (file != null) {
           loadFile(file);
         }
+      }
+    });
+    horizontalBox.getChildren().add(btn);
+  }
+
+  public void addWorstCaseButton(){
+    Button btn = new Button("Choose file...");
+    btn.setOnAction(new EventHandler<ActionEvent>() {
+      public void handle(ActionEvent event) {
+        calculateWorstCase();
       }
     });
     horizontalBox.getChildren().add(btn);
@@ -340,7 +361,7 @@ public class MainGui extends Application {
       informationBox.getChildren().clear();
       topLayer.getChildren().clear();
        drawRoutingPath(G.laubenthalschesRouting(), Color.VIOLET, 4, "LAUB");
-       // drawRoutingPath(G.chewsNew(topLayer), Color.RED, 3, "CHEW");
+       drawRoutingPath(G.chewsNew(), Color.RED, 3, "CHEW");
       // drawRoutingPath(G.optimalRoutingPath(), Color.LAWNGREEN, 2, "Djiks");
        drawRoutingPath(G.greedyRoutingPath(), Color.AQUA, 1, "Greedy");
     }
