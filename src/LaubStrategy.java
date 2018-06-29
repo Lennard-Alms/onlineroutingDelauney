@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.Collections;
 import java.lang.Math;
 
+
 class LaubStrategy implements IAlgorithm {
   private Animator animator;
   private Vertex start = null;

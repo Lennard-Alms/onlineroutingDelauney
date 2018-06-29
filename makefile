@@ -1,4 +1,4 @@
-SRC := $(wildcard src/**/*.java)
+SRC := $(wildcard src/*.java)
 OUT := target
 
 LIST := $(SRC:src/%.java=$(OUT)/%.class)
