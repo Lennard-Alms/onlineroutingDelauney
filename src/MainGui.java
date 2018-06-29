@@ -394,10 +394,12 @@ public class MainGui extends Application {
     if(G.V.size() > 1){
       informationBox.getChildren().clear();
       topLayer.getChildren().clear();
-       drawRoutingPath(G.laubenthalschesRouting(), Color.VIOLET, 4, "LAUB");
-       drawRoutingPath(G.chewsNew(), Color.RED, 3, "CHEW");
+      G.setOnlineStrategy(new LaubStrategy(G.vList.get(0), G.vList.get(1), new Animator(topLayer)));
+      drawRoutingPath(G.route(), Color.VIOLET, 4, "LAUB");
+      drawRoutingPath(G.laubenthalschesRouting(), Color.RED, 3, "CHEW");
+      // drawRoutingPath(G.chewsNew(), Color.RED, 3, "CHEW");
       // drawRoutingPath(G.optimalRoutingPath(), Color.LAWNGREEN, 2, "Djiks");
-       drawRoutingPath(G.greedyRoutingPath(), Color.AQUA, 1, "Greedy");
+      drawRoutingPath(G.greedyRoutingPath(), Color.AQUA, 1, "Greedy");
     }
   }
 

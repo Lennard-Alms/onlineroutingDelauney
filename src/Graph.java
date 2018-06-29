@@ -21,8 +21,14 @@ public class Graph {
 
     public List<Vertex> vList = new ArrayList<>();
     public HashSet<Vertex> V = new HashSet<>();
-
+    private IAlgorithm onlineStrategy = null;
+    
     public Graph() {
+      
+    }
+    
+    public void setOnlineStrategy(IAlgorithm strategy) {
+      onlineStrategy = strategy;
     }
 
     public void addVertex(Vertex v) {
@@ -72,7 +78,9 @@ public class Graph {
         // V = new HashSet<>();
     }
 
-
+    public List<Vertex> route() {
+      return onlineStrategy.run();
+    }
 
     public List<Vertex> laubenthalschesRouting() { // wenn zwei beschissene winkel dann nimm die kürzere kante
         List<Vertex> path = new ArrayList<>();
@@ -116,7 +124,7 @@ public class Graph {
                     double angle = (dot / (v_length * t_length));
                     angle = Math.toDegrees(Math.acos(angle)) / 90;
 
-                    routingRatio = ((distNorm) / Math.pow(edgeNorm, 3)) / (Math.pow(angle, 3));
+                    routingRatio = ((distNorm) / (edgeNorm)) / (Math.pow(angle, 3));
                     if(routingRatio > bestRatio && bestRatio != 0) {
                         best = v;
                         bestRatio = routingRatio;
