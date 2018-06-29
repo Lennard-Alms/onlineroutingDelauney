@@ -396,8 +396,7 @@ public class MainGui extends Application {
       topLayer.getChildren().clear();
       G.setOnlineStrategy(new LaubStrategy(G.vList.get(0), G.vList.get(1), new Animator(topLayer)));
       drawRoutingPath(G.route(), Color.VIOLET, 4, "LAUB");
-      drawRoutingPath(G.laubenthalschesRouting(), Color.RED, 3, "CHEW");
-      // drawRoutingPath(G.chewsNew(), Color.RED, 3, "CHEW");
+      drawRoutingPath(G.chewsNew(), Color.RED, 3, "CHEW");
       // drawRoutingPath(G.optimalRoutingPath(), Color.LAWNGREEN, 2, "Djiks");
       drawRoutingPath(G.greedyRoutingPath(), Color.AQUA, 1, "Greedy");
     }
