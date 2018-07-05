@@ -193,7 +193,19 @@ public class MainGui extends Application {
     addClearButton();
     addOnClickToggleButton();
     addWorstCaseButton();
+    addHighwayButton();
   }
+  public void addHighwayButton() {
+    Button btn = new Button("Calculate Highway");
+    btn.setOnAction(new EventHandler<ActionEvent>() {
+      public void handle(ActionEvent event) {
+        G.calculateHighway();
+        updateEdgesAndRoute();
+      }
+    });
+    horizontalBox.getChildren().add(btn);
+  }
+
   public void addOnClickToggleButton() {
     Button btn = new Button("No new Nodes");
     btn.setOnAction(new EventHandler<ActionEvent>() {
@@ -388,17 +400,23 @@ public class MainGui extends Application {
     edgeLayer.getChildren().clear();
     for (Vertex v : G.V) {
       for (Vertex w : v.neighbours) {
-        edgeLayer.getChildren().add(new Line(v.x, v.y, w.x, w.y));
+        if(v.isHighway && w.isHighway){
+          Line highwayEdge = new Line(v.x, v.y, w.x, w.y);
+          highwayEdge.setStroke(Color.ORANGE);
+          edgeLayer.getChildren().add(highwayEdge);
+        } else {
+          edgeLayer.getChildren().add(new Line(v.x, v.y, w.x, w.y));
+        }
       }
     }
     if(G.V.size() > 1){
       informationBox.getChildren().clear();
       topLayer.getChildren().clear();
       G.setOnlineStrategy(new LaubStrategy(G.vList.get(0), G.vList.get(1), new Animator(topLayer)));
-      drawRoutingPath(G.route(), Color.VIOLET, 4, "LAUB");
-      drawRoutingPath(G.chewsNew(), Color.RED, 3, "CHEW");
+      //drawRoutingPath(G.route(), Color.VIOLET, 4, "LAUB");
+      //drawRoutingPath(G.chewsNew(), Color.RED, 3, "CHEW");
       // drawRoutingPath(G.optimalRoutingPath(), Color.LAWNGREEN, 2, "Djiks");
-      drawRoutingPath(G.greedyRoutingPath(), Color.AQUA, 1, "Greedy");
+      //drawRoutingPath(G.greedyRoutingPath(), Color.AQUA, 1, "Greedy");
     }
   }
 

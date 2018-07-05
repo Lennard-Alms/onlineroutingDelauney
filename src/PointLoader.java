@@ -37,7 +37,7 @@ public class PointLoader {
         return pointSet;
     }
 
-    public List<Vertex> getVertices(){
+    public List<Vertex> getVertices() {
         List<Vertex> nodes = getPointsFromFile("GraphNodes");
         nodes.addAll(0, getPointsFromFile("HighwayNodes"));
         nodes.addAll(0, getPointsFromFile("RoutingNodes"));

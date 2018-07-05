@@ -12,25 +12,27 @@ class LaubStrategy implements IAlgorithm {
   private Animator animator;
   private Vertex start = null;
   private Vertex target = null;
-  
+
   public LaubStrategy(Vertex s, Vertex t, Animator animator) {
     setStart(s);
     setTarget(t);
     this.animator = animator;
   }
-  
+
+  public LaubStrategy() {}
+    
   public void setStart(Vertex s) {
     start = s;
   }
-  
+
   public void setTarget(Vertex t) {
     target = t;
   }
-  
+
   public void setAnimator() {
-    
+
   }
-  
+
   public List<Vertex> run() {
     Vertex current = start;
     List<Vertex> path = new ArrayList<>();
@@ -42,7 +44,7 @@ class LaubStrategy implements IAlgorithm {
     }
     return path;
   }
-  
+
   public Vertex step(Vertex current) {
     Vertex bestDeltaDistance = getNeighbourWithBestDeltaDistance(current);
     Vertex longestVector = getNeighbourWithLongestVector(current);
@@ -53,10 +55,10 @@ class LaubStrategy implements IAlgorithm {
         for(Vertex v : current.neighbours) {
             double normalizedDeltaDistance = normalizeDeltaDistance(v, bestDeltaDistance);
             double normalizedVectorLength = normalizeVectorLength(v, current, longestVector);
-            
+
             System.out.println(normalizedDeltaDistance);
             System.out.println(normalizedVectorLength);
-            
+
             double vertexScore = calculateScore(v, current, normalizedDeltaDistance, normalizedVectorLength);
             if(vertexScore > bestVertexScore && bestVertexScore != 0) {
                 bestNextVertex = v;
@@ -68,7 +70,7 @@ class LaubStrategy implements IAlgorithm {
     }
     return bestNextVertex;
   }
-  
+
   private HashSet<Vertex> removeBadVertices(Vertex current) {
     HashSet<Vertex> candidates = new HashSet<>();
     for(Vertex v : current.neighbours) {
@@ -78,7 +80,7 @@ class LaubStrategy implements IAlgorithm {
     }
     return candidates;
   }
-  
+
   private Vertex getNeighbourWithLongestVector(Vertex vertex) {
     Vertex longestVector = vertex;
     for(Vertex v : vertex.neighbours) {
@@ -88,7 +90,7 @@ class LaubStrategy implements IAlgorithm {
     }
     return longestVector;
   }
-  
+
   private Vertex getNeighbourWithBestDeltaDistance(Vertex vertex) {
     Vertex bestDeltaDistance = vertex;
     for(Vertex v : vertex.neighbours) {
@@ -98,15 +100,15 @@ class LaubStrategy implements IAlgorithm {
     }
     return bestDeltaDistance;
   }
-  
+
   private double normalizeVectorLength(Vertex v, Vertex current, Vertex longest) {
     return current.distance(v) / current.distance(longest);
   }
-  
+
   private double normalizeDeltaDistance(Vertex v, Vertex bestDeltaDistance) {
     return bestDeltaDistance.distance(target) / v.distance(target);
   }
-  
+
   private double calculateScore(Vertex v, Vertex current, double normalizedDeltaDistance, double normalizedVectorLength) {
     Vertex v_ = v.sub(current);
     Vertex t_ = target.sub(current);
@@ -118,5 +120,5 @@ class LaubStrategy implements IAlgorithm {
     angle = Math.toDegrees(Math.acos(angle)) / 90;
     return ((normalizedDeltaDistance) / (normalizedVectorLength)) / (Math.pow(angle, 3));
   }
-  
+
 }

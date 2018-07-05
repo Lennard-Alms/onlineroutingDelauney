@@ -8,6 +8,9 @@ public class Vertex {
     public double x;
     public double y;
     public double l;
+    public int count;
+    public int totalCount;
+    public Boolean isHighway = false;
 
     public Vertex(double x, double y) {
         this.x = x;
@@ -20,8 +23,12 @@ public class Vertex {
     }
 
     public double distance(Vertex v) {
-        Vertex d = sub(v);
-        return Math.sqrt(d.dot(d));
+        if(this.isHighway && v.isHighway){
+            return 0.000001;
+        } else {
+            Vertex d = sub(v);
+            return Math.sqrt(d.dot(d));
+        }
     }
 
     public Vertex sub(Vertex vertex) {
