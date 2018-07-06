@@ -23,12 +23,11 @@ public class Vertex {
     }
 
     public double distance(Vertex v) {
-        if(this.isHighway && v.isHighway){
-            return 0.000001;
-        } else {
-            Vertex d = sub(v);
-            return Math.sqrt(d.dot(d));
+        double dist = sub(v).mag();
+        if(this.isHighway && v.isHighway && dist!= 0.0){
+            return 0.000000001;
         }
+        return dist;
     }
 
     public Vertex sub(Vertex vertex) {
