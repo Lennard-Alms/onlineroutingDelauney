@@ -61,7 +61,7 @@ public class Graph {
     }
 
     public void calculateHighway() {
-        LaubStrategy laubStrategy = new LaubStrategy();
+        LaubStrategyNew laubStrategy = new LaubStrategyNew();
         for(Vertex v : vList) {
             v.totalCount = 0;
         }
