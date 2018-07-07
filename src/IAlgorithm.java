@@ -12,4 +12,5 @@ interface IAlgorithm {
   public Vertex step(Vertex current);
   public List<Vertex> run();
   public void setAnimator(Animator animator);
+  public Animator getAnimator();
 }

@@ -1,26 +1,18 @@
-import java.util.Hashtable;
-import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Comparator;
-import java.util.Collections;
 import java.lang.Math;
 
-
 class LaubStrategy implements IAlgorithm {
-  private Vertex start = null;
-  private Vertex target = null;
-  private Animator animator;
+  protected Animator animator;
+  protected Vertex start = null;
+  protected Vertex target = null;
+
+  public LaubStrategy() {}
 
   public LaubStrategy(Vertex s, Vertex t, Animator animator) {
     setStart(s);
     setTarget(t);
     setAnimator(animator);
-  }
-
-  public void setAnimator(Animator animator) {
-    this.animator = animator;
   }
 
   public void setStart(Vertex s) {
@@ -31,99 +23,43 @@ class LaubStrategy implements IAlgorithm {
     target = t;
   }
 
+  public void setAnimator(Animator animator) {
+    this.animator = animator;
+  }
+
+  public Animator getAnimator() {
+    return animator;
+  }
+
   public List<Vertex> run() {
     Vertex current = start;
     List<Vertex> path = new ArrayList<>();
     path.add(current);
     while(!current.equals(target)) {
       current = step(current);
-      System.out.println(current);
       path.add(current);
     }
     return path;
   }
 
   public Vertex step(Vertex current) {
-    Vertex bestDeltaDistance = getNeighbourWithBestDeltaDistance(current);
-    Vertex longestVector = getNeighbourWithLongestVector(current);
-    Vertex bestNextVertex = current;
-    if(bestDeltaDistance.distance(target) != 0) {
-        double bestVertexScore = -1;
-
-        for(Vertex v : current.neighbours) {
-            double normalizedDeltaDistance = normalizeDeltaDistance(v, bestDeltaDistance);
-            double normalizedVectorLength = normalizeVectorLength(v, current, longestVector);
-
-            System.out.println(normalizedDeltaDistance);
-            System.out.println(normalizedVectorLength);
-
-            double vertexScore = calculateScore(v, current, normalizedDeltaDistance, normalizedVectorLength);
-            if(vertexScore > bestVertexScore && bestVertexScore != 0) {
-                bestNextVertex = v;
-                bestVertexScore = vertexScore;
-            }
-        }
-    } else {
-      bestNextVertex = bestDeltaDistance;
-    }
-
-    animator.addAnimation(
-      new Animation()
-        .line(current.x, current.y, bestNextVertex.x, bestNextVertex.y)
-        .duration(1)
-    );
-
-    return bestNextVertex;
-  }
-
-  private HashSet<Vertex> removeBadVertices(Vertex current) {
-    HashSet<Vertex> candidates = new HashSet<>();
+    Vertex bestVertex = null;
+    double bestScore = Double.POSITIVE_INFINITY;
     for(Vertex v : current.neighbours) {
-      if(current.distance(target) > v.distance(target)) {
-        candidates.add(v);
+      if(v.equals(target)) { return v; }
+      if(v.distance(target) < current.distance(target)) {
+        double score = calculateScore(current, v);
+        if(score < bestScore) {
+          bestScore = score;
+          bestVertex = v;
+        }
       }
     }
-    return candidates;
+    return bestVertex;
   }
 
-  private Vertex getNeighbourWithLongestVector(Vertex vertex) {
-    Vertex longestVector = vertex;
-    for(Vertex v : vertex.neighbours) {
-      if(vertex.distance(v) > vertex.distance(longestVector)) {
-        longestVector = v;
-      }
-    }
-    return longestVector;
+  protected double calculateScore(Vertex current, Vertex v) {
+    double angle = Geometry.calculateAngle(v, target, current) / 90;
+    return Math.pow(angle,3) * v.distance(target) * current.distance(v);
   }
-
-  private Vertex getNeighbourWithBestDeltaDistance(Vertex vertex) {
-    Vertex bestDeltaDistance = vertex;
-    for(Vertex v : vertex.neighbours) {
-      if(v.distance(target) < bestDeltaDistance.distance(target)) {
-        bestDeltaDistance = v;
-      }
-    }
-    return bestDeltaDistance;
-  }
-
-  private double normalizeVectorLength(Vertex v, Vertex current, Vertex longest) {
-    return current.distance(v) / current.distance(longest);
-  }
-
-  private double normalizeDeltaDistance(Vertex v, Vertex bestDeltaDistance) {
-    return bestDeltaDistance.distance(target) / v.distance(target);
-  }
-
-  private double calculateScore(Vertex v, Vertex current, double normalizedDeltaDistance, double normalizedVectorLength) {
-    Vertex v_ = v.sub(current);
-    Vertex t_ = target.sub(current);
-
-    double dot = v_.dot(t_);
-    double v_length = v_.distance(new Vertex(.0,.0));
-    double t_length = t_.distance(new Vertex(.0,.0));
-    double angle = (dot / (v_length * t_length));
-    angle = Math.toDegrees(Math.acos(angle)) / 90;
-    return ((normalizedDeltaDistance) / (normalizedVectorLength)) / (Math.pow(angle, 3));
-  }
-
 }

@@ -42,6 +42,8 @@ public class MainGui extends Application {
   int generationCount = 0;
   Boolean addOnClick = true;
 
+  Animator animator;
+
   public static void main(String[] args) {
     launch(args);
   }
@@ -194,6 +196,7 @@ public class MainGui extends Application {
     addOnClickToggleButton();
     addWorstCaseButton();
     addHighwayButton();
+    addAnimationStepButton();
   }
   public void addHighwayButton() {
     Button btn = new Button("Calculate Highway");
@@ -201,6 +204,16 @@ public class MainGui extends Application {
       public void handle(ActionEvent event) {
         G.calculateHighway();
         updateEdgesAndRoute();
+      }
+    });
+    horizontalBox.getChildren().add(btn);
+  }
+
+  public void addAnimationStepButton() {
+    Button btn = new Button("Animate");
+    btn.setOnAction(new EventHandler<ActionEvent>() {
+      public void handle(ActionEvent event) {
+        animator.drawNext();
       }
     });
     horizontalBox.getChildren().add(btn);
@@ -412,10 +425,15 @@ public class MainGui extends Application {
     if(G.V.size() > 1){
       informationBox.getChildren().clear();
       topLayer.getChildren().clear();
-      G.setOnlineStrategy(new LaubStrategy(G.vList.get(0), G.vList.get(1), new Animator(topLayer)));
-      //drawRoutingPath(G.route(), Color.VIOLET, 4, "LAUB");
+      // G.setOnlineStrategy(new LaubStrategy(G.vList.get(0), G.vList.get(1), new Animator(topLayer)));
+      // drawRoutingPath(G.route(), Color.VIOLET, 4, "LAUB");
+      IAlgorithm laub = new LaubStrategyAnimated(G.vList.get(0), G.vList.get(1), new Animator(topLayer, informationBox));
+      G.setOnlineStrategy(laub);
+      Animator _animator = laub.getAnimator();
+      animator = _animator;
+      drawRoutingPath(G.route(), Color.VIOLET, 4, "LAUB2");
       //drawRoutingPath(G.chewsNew(), Color.RED, 3, "CHEW");
-      // drawRoutingPath(G.optimalRoutingPath(), Color.LAWNGREEN, 2, "Djiks");
+      drawRoutingPath(G.optimalRoutingPath(), Color.LAWNGREEN, 2, "Djiks");
       //drawRoutingPath(G.greedyRoutingPath(), Color.AQUA, 1, "Greedy");
     }
   }

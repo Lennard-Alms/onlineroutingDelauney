@@ -2,6 +2,7 @@ import javafx.scene.shape.Shape;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.*;
+import javafx.scene.paint.Color;
 
 import javafx.scene.layout.Pane;
 
@@ -12,10 +13,12 @@ class Animation {
   public static final int CIRCLE = 0;
   public static final int TEXT = 1;
   public static final int LINE = 2;
+  public static final int RESET = 3;
 
   public int type;
-  public double duration;
+  public double duration = 0;
   public Shape shape;
+  public Color color;
 
   public Animation() {
 
@@ -41,6 +44,17 @@ class Animation {
   public Animation text(String text) {
     shape = new Text(text);
     type = TEXT;
+    return this;
+  }
+
+  public Animation reset() {
+    shape = null;
+    type = RESET;
+    return this;
+  }
+
+  public Animation color(float r, float g, float b) {
+    color = new Color(r / 255, g / 255, b / 255, 1.0);
     return this;
   }
 
