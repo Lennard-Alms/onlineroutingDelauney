@@ -7,30 +7,43 @@ import java.util.Comparator;
 import java.util.Collections;
 import java.lang.Math;
 
+import javafx.scene.shape.Shape;
 import javafx.scene.layout.Pane;
 
 class Animator {
-  
-  private List<Animation> queue = new ArrayList<>();
+
+  private List<Animation> animations = new ArrayList<>();
   private Pane layer;
   private int cursor = 0;
-  
+
   public Animator(Pane layer) {
     this.layer = layer;
   }
-  
+
   public void addAnimation(Animation animation) {
-    queue.add(animation);
+    animations.add(animation);
   }
-  
-  public void drawNext() {
-    
-  }
-  
+
   public void reset() {
     cursor = 0;
   }
-  
-  
-  
+
+  public void drawNext() {
+    if(cursor < animations.size()) {
+      Animation animation = animations.get(cursor);
+      draw(animation);
+    }
+    cursor++;
+  }
+
+  private void draw(Animation animation) {
+    Shape shape = animation.shape;
+
+
+  }
+
+
+
+
+
 }

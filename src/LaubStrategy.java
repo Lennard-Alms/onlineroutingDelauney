@@ -9,28 +9,26 @@ import java.lang.Math;
 
 
 class LaubStrategy implements IAlgorithm {
-  private Animator animator;
   private Vertex start = null;
   private Vertex target = null;
+  private Animator animator;
 
   public LaubStrategy(Vertex s, Vertex t, Animator animator) {
     setStart(s);
     setTarget(t);
+    setAnimator(animator);
+  }
+
+  public void setAnimator(Animator animator) {
     this.animator = animator;
   }
 
-  public LaubStrategy() {}
-    
   public void setStart(Vertex s) {
     start = s;
   }
 
   public void setTarget(Vertex t) {
     target = t;
-  }
-
-  public void setAnimator() {
-
   }
 
   public List<Vertex> run() {
@@ -68,6 +66,13 @@ class LaubStrategy implements IAlgorithm {
     } else {
       bestNextVertex = bestDeltaDistance;
     }
+
+    animator.addAnimation(
+      new Animation()
+        .line(current.x, current.y, bestNextVertex.x, bestNextVertex.y)
+        .duration(1)
+    );
+
     return bestNextVertex;
   }
 

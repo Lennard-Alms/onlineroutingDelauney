@@ -11,5 +11,5 @@ import java.lang.Math;
 interface IAlgorithm {
   public Vertex step(Vertex current);
   public List<Vertex> run();
-  public void setAnimator();
+  public void setAnimator(Animator animator);
 }
