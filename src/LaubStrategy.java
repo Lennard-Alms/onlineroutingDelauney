@@ -60,10 +60,6 @@ class LaubStrategy implements IAlgorithm {
 
   protected double calculateScore(Vertex current, Vertex v) {
     double angle = Geometry.calculateAngle(v, target, current) / 90;
-    System.out.println(Math.pow(angle,3));
-    System.out.println(v.distance(target));
-    System.out.println(current.distance(v));
-    System.out.println("---");
     return Math.pow(angle,3) * v.distance(target) * current.distance(v);
   }
 }
