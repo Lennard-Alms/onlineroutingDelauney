@@ -22,7 +22,7 @@ import javafx.stage.FileChooser;
 import javafx.scene.text.*;
 import java.text.DecimalFormat;
 import javafx.scene.layout.Pane;
-
+import javafx.scene.control.CheckBox;
 import java.util.Random;
 import java.util.HashSet;
 import java.util.Set;
@@ -145,15 +145,22 @@ public class MainGui extends Application {
       topLayer.getChildren().clear();
       // G.setOnlineStrategy(new LaubStrategy(G.vList.get(0), G.vList.get(1), new Animator(topLayer)));
       // drawRoutingPath(G.route(), Color.VIOLET, 4, "LAUB");
+      IAlgorithm chew = new ChewStrategy(G.vList.get(0), G.vList.get(1), new Animator(topLayer, animationinformationBox));
+      IAlgorithm comp = new CompasStrategy(G.vList.get(0), G.vList.get(1), new Animator(topLayer, animationinformationBox));
+      IAlgorithm greed = new GreedyStrategy(G.vList.get(0), G.vList.get(1), new Animator(topLayer, animationinformationBox));
       IAlgorithm opt = new OptimalStrategy(G.vList.get(0), G.vList.get(1), new Animator(topLayer, animationinformationBox), G);
       IAlgorithm laub = new LaubStrategyAnimated(G.vList.get(0), G.vList.get(1), new Animator(topLayer, animationinformationBox));
       G.setOnlineStrategy(laub);
       buttons.setAnimator(laub.getAnimator());
-      drawRoutingPath(G.route(), Color.VIOLET, 4, "LAUB2");
+      drawRoutingPath(G.route(), Color.VIOLET, 4, "Laub");
       G.setOnlineStrategy(opt);
       drawRoutingPath(G.route(), Color.LAWNGREEN, 2, "Djiks");
-      //drawRoutingPath(G.chewsNew(), Color.RED, 3, "CHEW");
-      //drawRoutingPath(G.greedyRoutingPath(), Color.AQUA, 1, "Greedy");
+      G.setOnlineStrategy(greed);
+      drawRoutingPath(G.route(), Color.AQUA, 1, "Greedy");
+      G.setOnlineStrategy(comp);
+      drawRoutingPath(G.route(), Color.GOLD, 1, "Compas");
+      G.setOnlineStrategy(chew);
+      drawRoutingPath(G.route(), Color.RED, 1, "Chew");
     }
   }
 
