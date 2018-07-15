@@ -20,11 +20,13 @@ class LaubStrategyAnimated extends LaubStrategy {
     );
 
     float fscore = (float)score;
+    float red = fscore < 15000 ? Math.min((fscore) / 240, 255) : 255;
+    float green = fscore > 15000 ? 255 - Math.min((fscore - 15000) / 240, 255) : 255;
     animator.addAnimation(
       new Animation()
         .line(current.x, current.y, v.x, v.y)
         .duration(2)
-        .color(Math.min(fscore / 120, 255), 255 - Math.min(fscore / 120, 255), 0)
+        .color(red, green, 0)
     );
 
     return score;
