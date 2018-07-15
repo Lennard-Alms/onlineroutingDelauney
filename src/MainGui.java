@@ -145,12 +145,14 @@ public class MainGui extends Application {
       topLayer.getChildren().clear();
       // G.setOnlineStrategy(new LaubStrategy(G.vList.get(0), G.vList.get(1), new Animator(topLayer)));
       // drawRoutingPath(G.route(), Color.VIOLET, 4, "LAUB");
+      IAlgorithm opt = new OptimalStrategy(G.vList.get(0), G.vList.get(1), new Animator(topLayer, animationinformationBox), G);
       IAlgorithm laub = new LaubStrategyAnimated(G.vList.get(0), G.vList.get(1), new Animator(topLayer, animationinformationBox));
       G.setOnlineStrategy(laub);
       buttons.setAnimator(laub.getAnimator());
       drawRoutingPath(G.route(), Color.VIOLET, 4, "LAUB2");
+      G.setOnlineStrategy(opt);
+      drawRoutingPath(G.route(), Color.LAWNGREEN, 2, "Djiks");
       //drawRoutingPath(G.chewsNew(), Color.RED, 3, "CHEW");
-      drawRoutingPath(G.optimalRoutingPath(), Color.LAWNGREEN, 2, "Djiks");
       //drawRoutingPath(G.greedyRoutingPath(), Color.AQUA, 1, "Greedy");
     }
   }

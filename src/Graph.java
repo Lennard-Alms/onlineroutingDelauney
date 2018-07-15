@@ -123,70 +123,10 @@ public class Graph {
         vList.clear();
         V.clear();
         highway = null;
-
-        // vList = new ArrayList<>();
-        // V = new HashSet<>();
     }
 
     public List<Vertex> route() {
       return onlineStrategy.run();
-    }
-
-    public List<Vertex> laubenthalschesRouting() { // wenn zwei beschissene winkel dann nimm die kürzere kante
-        List<Vertex> path = new ArrayList<>();
-        Vertex current = vList.get(0);
-        path.add(current);
-
-        while(!current.equals(vList.get(1))) {
-            HashSet<Vertex> candidates = new HashSet<>();
-            for(Vertex v : current.neighbours) {
-                if(current.distance(vList.get(1)) > v.distance(vList.get(1))) {
-                    candidates.add(v);
-                }
-            }
-            Vertex bestDist = current;
-            Vertex longestEdge = current;
-            for(Vertex v : candidates) {
-                if(v.distance(vList.get(1)) < bestDist.distance(vList.get(1))) {
-                    bestDist = v;
-                }
-                if(current.distance(v) > current.distance(longestEdge)) {
-                    longestEdge = v;
-                }
-            }
-            Vertex best = current;
-            if(bestDist.distance(vList.get(1)) != 0) {
-                double bestRatio = -1;
-                double distNorm;
-                double edgeNorm;
-                double routingRatio;
-
-                for(Vertex v : candidates) {
-                    distNorm = bestDist.distance(vList.get(1)) / v.distance(vList.get(1));
-                    edgeNorm = current.distance(v) / current.distance(longestEdge);
-
-                    Vertex v_ = v.sub(current);
-                    Vertex t_ = vList.get(1).sub(current);
-
-                    double dot = v_.dot(t_);
-                    double v_length = v_.distance(new Vertex(.0,.0));
-                    double t_length = t_.distance(new Vertex(.0,.0));
-                    double angle = (dot / (v_length * t_length));
-                    angle = Math.toDegrees(Math.acos(angle)) / 90;
-
-                    routingRatio = ((distNorm) / (edgeNorm)) / (Math.pow(angle, 3));
-                    if(routingRatio > bestRatio && bestRatio != 0) {
-                        best = v;
-                        bestRatio = routingRatio;
-                    }
-                }
-            } else {
-              best = bestDist;
-            }
-            current = best;
-            path.add(current);
-        }
-        return path;
     }
 
     public List<Vertex> chewsNew() {
@@ -202,12 +142,10 @@ public class Graph {
             Vertex x = null;
             Vertex y = null;
             for(Vertex v : current.nList) {
-
                 if(v.equals(t)) {
                     path.add(t);
                     return path;
                 }
-
                 for(Vertex w : current.nList) {
                     if(v.neighbours.contains(w)) {
                         if(intersects(s,t,v,w)) {
@@ -222,16 +160,10 @@ public class Graph {
                     }
                 }
             }
-
-
             if(x != null && y != null) {
               Vertex cc = GetCircumcenter(current, x, y);
               Vertex leftmost = cc.add(s.sub(t).mult(1/s.sub(t).mag()).mult(cc.distance(current)));
               Vertex rightmostInter = findRightIntersect(s,t,cc,current);
-
-
-
-
               if(Geometry.comparePointToLine(leftmost, rightmostInter, current) == Geometry.comparePointToLine(leftmost, rightmostInter, x)) {
                   current = x;
               } else {
@@ -246,7 +178,6 @@ public class Graph {
         return path;
     }
 
-
     public Vertex findRightIntersect(Vertex s, Vertex t, Vertex cc, Vertex current) {
         Vertex sToT = t.sub(s);
         Vertex sToCC = cc.sub(s);
@@ -258,12 +189,6 @@ public class Graph {
         Vertex dest = proj.add(sToT.mult(1/sToT.mag()).mult(plus));
         return s.add(dest);
     }
-
-
-
-
-
-
 
     public double Slope(Vertex from, Vertex to) {
   		return (to.y - from.y) / (to.x - from.x);
@@ -335,7 +260,6 @@ public class Graph {
       return true;
     }
 
-
     public List<Vertex> greedyRoutingPath() {
         Vertex current = vList.get(0);
         List<Vertex> path = new ArrayList<>();
@@ -352,44 +276,7 @@ public class Graph {
         }
         return path;
     }
-
-    public List<Vertex> optimalRoutingPath() {
-        for(Vertex v : V) {
-            v.l = Double.POSITIVE_INFINITY;
-        }
-        vList.get(0).l = 0;
-        PriorityQueue<Vertex> q = new PriorityQueue<>(11, new VertexComperator());
-        q.add(vList.get(0));
-        HashSet<Vertex> R = new HashSet<>(V);
-        Hashtable<Vertex, Vertex> p = new Hashtable<>();
-        while(R.size() > 0) {
-            Vertex v = 	q.poll();
-            while(!R.contains(v)) {
-                v = q.poll();
-            }
-            R.remove(v);
-            for(Vertex w : v.neighbours) {
-                if(R.contains(w)) {
-                    if(w.l > v.l + v.distance(w)) {
-                        w.l = v.l + v.distance(w);
-                        q.add(w);
-                        p.remove(w);
-                        p.put(w, v);
-                    }
-                }
-            }
-        }
-        List<Vertex> path = new ArrayList<>();
-        Vertex v = vList.get(1);
-        path.add(0, v);
-        while(!v.equals(vList.get(0))) {
-            Vertex next = p.get(v);
-            path.add(next);
-            v = next;
-        }
-        return path;
-    }
-
+    
     @Override
     public String toString() {
         return "Vertices[" + V + "]";
