@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.lang.Math;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.*;
 
 import javafx.scene.shape.Shape;
 import javafx.scene.layout.Pane;
@@ -56,6 +57,9 @@ class Animator {
         break;
       case Animation.RESET:
         textbox.getChildren().clear();
+        Text txt = new Text("Scores:");
+        txt.setStroke(Color.RED);
+        textbox.getChildren().add(txt);
         layer.getChildren().clear();
         break;
       case Animation.LINE:

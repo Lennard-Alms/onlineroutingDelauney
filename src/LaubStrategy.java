@@ -46,7 +46,7 @@ class LaubStrategy implements IAlgorithm {
     Vertex bestVertex = null;
     double bestScore = Double.POSITIVE_INFINITY;
     for(Vertex v : current.neighbours) {
-      if(v.equals(target)) { return v; }
+      // if(v.equals(target)) { return v; } to see the animation better we do not use this
       if(v.distance(target) < current.distance(target)) {
         double score = calculateScore(current, v);
         if(score < bestScore) {
