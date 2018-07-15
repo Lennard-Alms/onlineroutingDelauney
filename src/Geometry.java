@@ -39,6 +39,7 @@ public class Geometry {
   }
 
   public static double calculateAngle(Vertex x, Vertex y, Vertex referencePoint, int mode) {
+    if(x.equals(y)){return 0.0;}
     x = x.sub(referencePoint);
     y = y.sub(referencePoint);
 
