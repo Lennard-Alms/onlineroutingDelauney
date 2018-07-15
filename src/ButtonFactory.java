@@ -44,7 +44,6 @@ public class ButtonFactory {
         box.getChildren().add(btn);
     }
 
-
     public void addOnClickToggleButton(Pane box) {
         Button btn = new Button("No new Nodes");
         btn.setOnAction(new EventHandler<ActionEvent>() {

@@ -44,6 +44,8 @@ public class MainGui extends Application {
   Animator animator;
   ButtonFactory buttons;
   int generationCount = 0;
+  Boolean[] showAlg = new Boolean[]{true, true, true, true, true};
+  int showAlgNum = 31;
 
   public static void main(String[] args) {
     launch(args);
@@ -152,15 +154,15 @@ public class MainGui extends Application {
       IAlgorithm laub = new LaubStrategyAnimated(G.vList.get(0), G.vList.get(1), new Animator(topLayer, animationinformationBox));
       G.setOnlineStrategy(laub);
       buttons.setAnimator(laub.getAnimator());
-      drawRoutingPath(G.route(), Color.VIOLET, 4, "Laub");
+      if(showAlg[0]) drawRoutingPath(G.route(), Color.VIOLET, 5, "Laub");
       G.setOnlineStrategy(opt);
-      drawRoutingPath(G.route(), Color.LAWNGREEN, 2, "Djiks");
+      if(showAlg[1]) drawRoutingPath(G.route(), Color.LAWNGREEN, 4, "Djiks");
       G.setOnlineStrategy(greed);
-      drawRoutingPath(G.route(), Color.AQUA, 1, "Greedy");
+      if(showAlg[2]) drawRoutingPath(G.route(), Color.AQUA, 3, "Greedy");
       G.setOnlineStrategy(comp);
-      drawRoutingPath(G.route(), Color.GOLD, 1, "Compas");
+      if(showAlg[3]) drawRoutingPath(G.route(), Color.GOLD, 2, "Compas");
       G.setOnlineStrategy(chew);
-      drawRoutingPath(G.route(), Color.RED, 1, "Chew");
+      if(showAlg[4]) drawRoutingPath(G.route(), Color.RED, 1, "Chew");
     }
   }
 
@@ -240,6 +242,24 @@ public class MainGui extends Application {
         updateEdgesAndRoute();
       }
     });
+    Button btn = new Button("Show: 11111");
+    btn.setOnAction(new EventHandler<ActionEvent>() {
+      public void handle(ActionEvent event) {
+        showAlgNum = (showAlgNum + 1) % 32;
+        String showAlgNumString = Integer.toBinaryString(showAlgNum);
+        btn.setText("Show: " + showAlgNumString);
+        showAlg = new Boolean[]{false, false, false, false, false};
+        for(int i = 0; i < showAlgNumString.length(); i++) {
+          char c = showAlgNumString.charAt(i);
+          if(c == "1".charAt(0)){
+            showAlg[i] = true;
+          }
+        }
+        updateEdgesAndRoute();
+      }
+    });
+    horizontalBox.getChildren().add(btn);
+
     // addWorstCaseButton();
   }
 
