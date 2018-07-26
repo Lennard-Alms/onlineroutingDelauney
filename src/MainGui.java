@@ -209,7 +209,7 @@ public class MainGui extends Application {
     buttons.addAnimationStepButton(horizontalBox);
     buttons.addButton(horizontalBox, "Random Set", new EventHandler<ActionEvent>() {
       public void handle(ActionEvent event) {
-        if(generationCount < 30){
+        if(generationCount < 50){
           generationCount++;
           nodeLayer.getChildren().clear();
           setupNodeLayer();
@@ -259,8 +259,7 @@ public class MainGui extends Application {
       }
     });
     horizontalBox.getChildren().add(btn);
-
-    // addWorstCaseButton();
+    buttons.addWorstCaseButton(horizontalBox);
   }
 
 

@@ -69,10 +69,16 @@ class ChewStrategy implements IAlgorithm {
       Vertex cc = GetCircumcenter(current, x, y);
       Vertex leftmost = cc.add(start.sub(target).mult(1/start.sub(target).mag()).mult(cc.distance(current)));
       Vertex rightmostInter = findRightIntersect(start,target,cc,current);
-      if(Geometry.comparePointToLine(leftmost, rightmostInter, current) == Geometry.comparePointToLine(leftmost, rightmostInter, x)) {
+      if(Geometry.comparePointToLine(leftmost, rightmostInter, current) == Geometry.comparePointToLine(leftmost, rightmostInter, x) && Geometry.comparePointToLine(leftmost, rightmostInter, current) != Geometry.comparePointToLine(leftmost, rightmostInter, y)) {
           current = x;
-      } else {
+      } else if(Geometry.comparePointToLine(leftmost, rightmostInter, current) != Geometry.comparePointToLine(leftmost, rightmostInter, x) && Geometry.comparePointToLine(leftmost, rightmostInter, current) == Geometry.comparePointToLine(leftmost, rightmostInter, y)) {
           current = y;
+      } else {
+        if(x.distance(target) < y.distance(target)) {
+          current = x;
+        } else {
+          current = y;
+        }
       }
       return current;
     } else {
