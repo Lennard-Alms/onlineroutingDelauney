@@ -26,6 +26,9 @@ import javafx.scene.control.CheckBox;
 import java.util.Random;
 import java.util.HashSet;
 import java.util.Set;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import java.net.MalformedURLException;
 
 public class MainGui extends Application {
 
