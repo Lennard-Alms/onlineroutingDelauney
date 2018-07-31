@@ -20,8 +20,8 @@ class LaubStrategyAnimated extends LaubStrategy {
     );
 
     float fscore = (float)score;
-    float red = fscore < 15000 ? Math.min((fscore) / 240, 255) : 255;
-    float green = fscore > 15000 ? 255 - Math.min((fscore - 15000) / 240, 255) : 255;
+    float red = fscore < 8000 ? Math.min((fscore) / 30, 255) : 255;
+    float green = fscore > 8000 ? 255 - Math.min((fscore - 8000) / 240, 255) : 255;
     animator.addAnimation(
       new Animation()
         .line(current.x, current.y, v.x, v.y)
@@ -49,5 +49,4 @@ class LaubStrategyAnimated extends LaubStrategy {
     );
     return list;
   }
-
 }
