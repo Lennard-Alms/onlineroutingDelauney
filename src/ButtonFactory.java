@@ -113,8 +113,8 @@ public class ButtonFactory {
         Button btn = new Button("Worst Case");
         btn.setOnAction(new EventHandler<ActionEvent>() {
           public void handle(ActionEvent event) {
-            // calculateWorstCase();
-            calculateStats();
+            calculateWorstCase();
+            // calculateStats();
           }
         });
         box.getChildren().add(btn);
@@ -133,14 +133,27 @@ public class ButtonFactory {
       String worstVerticesLaub = "";
       String worstVerticesChew = "";
 
-      for(int index = 0; index < 100000; index++) {
+      for(int index = 0; index < 1000; index++) {
         G.clear();
-        G.addVertex(new Vertex(250, 300));
-        G.addVertex(new Vertex(550, 300));
+        // G.addVertex(new Vertex(250, 300));
+        // G.addVertex(new Vertex(550, 300));
+        //
+        // for(int k = 0; k < 20; k++) {
+        //   G.addVertex(new Vertex(rand.nextDouble() * 600 + 100, rand.nextDouble() * 400 + 100));
+        // }
 
+        double angle;
+        double x;
+        double y;
+        double radius = 250;
         for(int k = 0; k < 20; k++) {
-          G.addVertex(new Vertex(rand.nextDouble() * 600 + 100, rand.nextDouble() * 400 + 100));
+          angle = Math.random()*Math.PI*2;
+          x = Math.cos(angle)*radius;
+          y = Math.sin(angle)*radius;
+          G.addVertex(new Vertex(x + 300,y + 300));
         }
+
+
         IAlgorithm chew = new ChewStrategy(G.vList.get(0), G.vList.get(1), new Animator(new Pane(), new VBox()));
         IAlgorithm comp = new CompasStrategy(G.vList.get(0), G.vList.get(1), new Animator(new Pane(), new VBox()));
         IAlgorithm greed = new GreedyStrategy(G.vList.get(0), G.vList.get(1), new Animator(new Pane(), new VBox()));
@@ -149,7 +162,7 @@ public class ButtonFactory {
         int rate = 10;
         G.calculateTriangulation();
 
-        G.setOnlineStrategy(laub);
+        G.setOnlineStrategy(greed);
         List<Vertex> path_laubenthal = G.route();
         G.setOnlineStrategy(chew);
         List<Vertex> path_chews = G.route();
