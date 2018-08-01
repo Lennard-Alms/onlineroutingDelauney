@@ -47,7 +47,8 @@ class LaubStrategy implements IAlgorithm {
     double bestScore = Double.POSITIVE_INFINITY;
     for(Vertex v : current.neighbours) {
       //if(v.equals(target)) { return v; }
-      if(v.distance(target) < current.distance(target)) {
+      Vertex v_t = v.sub(target);
+      if(v_t.mag() < current.distance(target)) {
         double score = calculateScore(current, v);
         if(score < bestScore) {
           bestScore = score;
@@ -60,6 +61,7 @@ class LaubStrategy implements IAlgorithm {
 
   protected double calculateScore(Vertex current, Vertex v) {
     double angle = Geometry.calculateAngle(v, target, current) / 90;
-    return Math.pow(angle,3) * v.distance(target) * current.distance(v);
+    Vertex v_t = v.sub(target);
+    return Math.pow(angle,3) * v_t.mag() * current.distance(v);
   }
 }

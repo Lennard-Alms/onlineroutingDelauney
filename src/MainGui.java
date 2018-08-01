@@ -218,10 +218,21 @@ public class MainGui extends Application {
           setupNodeLayer();
           G.clear();
           Random rand = new Random();
+          // addNode(400,20, false);
+          // addNode(400,580, false);
           addNode(20,300, false);
-          addNode(780,300, false);
-          for(int i = 0; i < 50; i++){
-            addNode(rand.nextInt(760)+20,rand.nextInt(560)+20, false);
+          addNode(680,300, false);
+          for(int i = 0; i < 10; i++){
+            for(int j = 0; j < 10; j++){
+              // addNode(i*10,rand.nextInt(560)+20, false);
+              addNode(40 + i*20, 200 + j*20, false);
+            }
+          }
+          for(int i = 0; i < 10; i++){
+            for(int j = 0; j < 10; j++){
+              // addNode(i*10,rand.nextInt(560)+20, false);
+              addNode(440 + i*20, 200 + j*20, false);
+            }
           }
         }
         G.calculateTriangulation();

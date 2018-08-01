@@ -33,16 +33,20 @@ public class Graph {
     }
 
     public void addVertex(Vertex v) {
-        V.add(v);
-        vList.add(v);
-        calculateTriangulation();
+        if(!V.contains(v)){
+            V.add(v);
+            vList.add(v);
+            calculateTriangulation();
+        }
     }
 
     public void addVertex(Vertex v, Boolean calcTriang) {
-        V.add(v);
-        vList.add(v);
-        if(calcTriang) {
-            calculateTriangulation();
+        if(!V.contains(v)){
+            V.add(v);
+            vList.add(v);
+            if(calcTriang) {
+                calculateTriangulation();
+            }
         }
     }
 

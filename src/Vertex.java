@@ -54,6 +54,10 @@ public class Vertex {
         return this.y * vertex.x - this.x * vertex.y;
     }
 
+    public Boolean isHighway() {
+      return this.isHighway;
+    }
+
     public String toString() {
         String neig = "";
         for(Vertex v : neighbours){

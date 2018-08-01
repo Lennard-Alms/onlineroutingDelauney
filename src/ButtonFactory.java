@@ -113,13 +113,12 @@ public class ButtonFactory {
         Button btn = new Button("Worst Case");
         btn.setOnAction(new EventHandler<ActionEvent>() {
           public void handle(ActionEvent event) {
-            calculateWorstCase();
+            // calculateWorstCase();
+            calculateStats();
           }
         });
         box.getChildren().add(btn);
     }
-
-
 
 
     public void calculateWorstCase() {
@@ -215,5 +214,121 @@ public class ButtonFactory {
          writer.close();
        } catch(Exception e) {}
      }
+
+
+
+
+     public void calculateStats() {
+         double longestPath = 0;
+         double longestPathWhighway = 0;
+         double djikstra_all_day = 0;
+         double djikstra_all_day_no_highway = 0;
+         double laub_all_day = 0;
+         double laub_all_day_no_highway = 0;
+         double laub_worsen_all_day = 0;
+         int djikstra_used_highway = 0;
+         int laub_used_highway = 0;
+         int laub_used_highway_worsen = 0;
+         Random rand = new Random();
+         for(int z = 1; z < 11; z++){
+             for(int index = 0; index < 100000; index++) {
+                 G.clear();
+                 for(int k = 0; k < 5 * z; k++) {
+                     G.addVertex(new Vertex(rand.nextDouble() * 800, rand.nextDouble() * 600), false);
+                 }
+                 G.calculateTriangulation();
+                 IAlgorithm opt = new OptimalStrategy(G.vList.get(0), G.vList.get(1), new Animator(new Pane(), new VBox()), G);
+                 IAlgorithm laub = new LaubStrategyAnimated(G.vList.get(0), G.vList.get(1), new Animator(new Pane(), new VBox()));
+                 G.setOnlineStrategy(laub);
+                 List<Vertex> path_laubenthal = G.route();
+                 G.setOnlineStrategy(opt);
+                 List<Vertex> path_dijkstra = G.route();
+                 double dist_laubenthal_no_highway = 0;
+                 double dist_dijkstra_no_highway = 0;
+                 for(int i = 0; i < path_laubenthal.size() - 1; i++) {
+                   dist_laubenthal_no_highway += path_laubenthal.get(i).distance(path_laubenthal.get(i+1));
+                 }
+                 for(int i = 0; i < path_dijkstra.size() - 1; i++) {
+                   dist_dijkstra_no_highway += path_dijkstra.get(i).distance(path_dijkstra.get(i+1));
+                 }
+                 G.calculateHighway();
+                 opt = new OptimalStrategy(G.vList.get(0), G.vList.get(1), new Animator(new Pane(), new VBox()), G);
+                 laub = new LaubStrategyAnimated(G.vList.get(0), G.vList.get(1), new Animator(new Pane(), new VBox()));
+                 G.setOnlineStrategy(laub);
+                 path_laubenthal = G.route();
+                 G.setOnlineStrategy(opt);
+                 path_dijkstra = G.route();
+                 double dist_laubenthal = 0;
+                 double dist_dijkstra = 0;
+                 for(int i = 0; i < path_laubenthal.size() - 1; i++) {
+                     dist_laubenthal += path_laubenthal.get(i).distance(path_laubenthal.get(i+1));
+                 }
+                 for(int i = 0; i < path_dijkstra.size() - 1; i++) {
+                   dist_dijkstra += path_dijkstra.get(i).distance(path_dijkstra.get(i+1));
+                 }
+                 Vertex s_t = G.vList.get(0).sub(G.vList.get(1));
+                 double euclid = s_t.mag();
+                 if(dist_dijkstra != dist_dijkstra_no_highway){
+                     djikstra_used_highway++;
+                 }
+                 if(dist_laubenthal != dist_laubenthal_no_highway){
+                     laub_used_highway++;
+                 }
+                 if(dist_laubenthal_no_highway / euclid > longestPath){
+                     longestPath = dist_laubenthal_no_highway / euclid;
+                 }
+                 if(dist_laubenthal / euclid > longestPathWhighway && dist_laubenthal_no_highway != dist_laubenthal){
+                     longestPathWhighway = dist_laubenthal / euclid;
+                 }
+                 if(dist_laubenthal_no_highway < dist_laubenthal) {
+                     laub_worsen_all_day += (dist_laubenthal - dist_laubenthal_no_highway) / euclid;
+                     laub_worsen_all_day++;
+                     laub_used_highway_worsen++;
+                 }
+
+                 djikstra_all_day_no_highway += (dist_dijkstra_no_highway / euclid);
+                 djikstra_all_day += (dist_dijkstra / euclid);
+                 laub_all_day_no_highway += (dist_laubenthal_no_highway / euclid);
+                 laub_all_day += (dist_laubenthal / euclid);
+
+
+             }
+
+             System.out.println("longestPath: " + longestPath);
+             System.out.println("longestPathWhighway: " + longestPathWhighway);
+             System.out.println("djikstra_all_day: " + djikstra_all_day);
+             double djikstra_percent = djikstra_all_day / 1000;
+             System.out.println("djikstra_percent: " + djikstra_percent);
+             System.out.println("djikstra_all_day_no_highway: " + djikstra_all_day_no_highway);
+             double djikstra_percent_nh = djikstra_all_day_no_highway / 1000;
+             System.out.println("djikstra_percent_nh: " + djikstra_percent_nh);
+             System.out.println("laub_all_day: " + laub_all_day);
+             double laub_percent = laub_all_day / 1000;
+             System.out.println("laub_percent: " + laub_percent);
+             System.out.println("laub_all_day_no_highway: " + laub_all_day_no_highway);
+             double laub_percent_nh = laub_all_day_no_highway / 1000;
+             System.out.println("laub_percent_nh: " + laub_percent_nh);
+             System.out.println("djikstra_used_highway: " + djikstra_used_highway);
+             double djikstra_used_highway_percent = (double) djikstra_used_highway / 1000.0;
+             System.out.println("djikstra_used_highway_percent: " + djikstra_used_highway_percent);
+             System.out.println("laub_used_highway: " + laub_used_highway);
+             double laub_used_highway_percent = (double) laub_used_highway / 1000.0;
+             System.out.println("laub_used_highway_percent: " + laub_used_highway_percent);
+             double laub_used_and_djiks_not_percent = ( (double) laub_used_highway / (double) djikstra_used_highway ) * 100.0;
+             System.out.println("laub_used_and_djiks_not_percent: " + laub_used_and_djiks_not_percent);
+             System.out.println("laub_used_highway_worsen: " + laub_used_highway_worsen);
+             double laub_used_worsen_percent = ( (double) laub_used_highway_worsen / (double) laub_used_highway) * 100;
+             System.out.println("laub_used_worsen_percent: "+ laub_used_worsen_percent);
+             System.out.println("laub_worsen_all_day: "+ laub_worsen_all_day);
+             double laub_used_worsen_percent_length = (laub_worsen_all_day / (double) laub_used_highway_worsen) * 100;
+             System.out.println("laub_used_worsen_percent_length: "+ laub_used_worsen_percent_length);
+
+             System.out.println(":::::::::::::::::::::::::::::::::::::");
+
+
+         }
+
+    }
+
 
 }

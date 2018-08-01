@@ -45,7 +45,8 @@ class GreedyStrategy implements IAlgorithm {
   public Vertex step(Vertex current) {
     Vertex bestVertex = current;
     for(Vertex v : current.neighbours) {
-      if(bestVertex.distance(target) > v.distance(target)) {
+      Vertex v_t = v.sub(target);
+      if(bestVertex.distance(target) > v_t.mag()) {
         bestVertex = v;
       }
     }
