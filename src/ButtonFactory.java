@@ -219,18 +219,18 @@ public class ButtonFactory {
 
 
      public void calculateStats() {
-         double longestPath = 0;
-         double longestPathWhighway = 0;
-         double djikstra_all_day = 0;
-         double djikstra_all_day_no_highway = 0;
-         double laub_all_day = 0;
-         double laub_all_day_no_highway = 0;
-         double laub_worsen_all_day = 0;
-         int djikstra_used_highway = 0;
-         int laub_used_highway = 0;
-         int laub_used_highway_worsen = 0;
          Random rand = new Random();
          for(int z = 1; z < 11; z++){
+             double longestPath = 0;
+             double longestPathWhighway = 0;
+             double djikstra_all_day = 0;
+             double djikstra_all_day_no_highway = 0;
+             double laub_all_day = 0;
+             double laub_all_day_no_highway = 0;
+             double laub_worsen_all_day = 0;
+             int djikstra_used_highway = 0;
+             int laub_used_highway = 0;
+             int laub_used_highway_worsen = 0;
              for(int index = 0; index < 100000; index++) {
                  G.clear();
                  for(int k = 0; k < 5 * z; k++) {
