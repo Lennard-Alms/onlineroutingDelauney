@@ -43,7 +43,7 @@ class LaubStrategy implements IAlgorithm {
   }
 
   public Vertex step(Vertex current) {
-    Vertex bestVertex = null;
+    Vertex bestVertex = current;
     double bestScore = Double.POSITIVE_INFINITY;
     for(Vertex v : current.neighbours) {
       //if(v.equals(target)) { return v; }

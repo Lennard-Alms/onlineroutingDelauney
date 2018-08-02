@@ -220,18 +220,24 @@ public class MainGui extends Application {
           Random rand = new Random();
           // addNode(400,20, false);
           // addNode(400,580, false);
+          double z = 0.2;
           addNode(20,300, false);
           addNode(680,300, false);
-          for(int i = 0; i < 10; i++){
-            for(int j = 0; j < 10; j++){
+          for(int i = 0; i < 5; i++){
+            for(int j = 0; j < 20; j++){
               // addNode(i*10,rand.nextInt(560)+20, false);
-              addNode(40 + i*20, 200 + j*20, false);
+              addNode(40 + i*20*z, 200 + j*2*z, false);
+              z += 0.04;
             }
           }
-          for(int i = 0; i < 10; i++){
-            for(int j = 0; j < 10; j++){
+          z = 0.2;
+          double y = 4.2;
+          for(int i = 0; i < 5; i++){
+            for(int j = 0; j < 20; j++){
               // addNode(i*10,rand.nextInt(560)+20, false);
-              addNode(440 + i*20, 200 + j*20, false);
+              addNode(440 + i*20*z, 200 + j*2*y, false);
+              y -= 0.02;
+              z += 0.04;
             }
           }
         }
