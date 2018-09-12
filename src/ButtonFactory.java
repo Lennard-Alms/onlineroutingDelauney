@@ -182,15 +182,16 @@ public class ButtonFactory {
           System.out.println("Punkte nach oben verschoben");
           saveWorstFile(worstVerticesLaub, "worstcase.graph");
         }
-        if(worst_dijkstra_euclid < dijkstra_euclid) worst_dijkstra_euclid = dijkstra_euclid;
+        if(worst_dijkstra_euclid < dijkstra_euclid)
+          worst_dijkstra_euclid = dijkstra_euclid;
         if(worst_chew_euclid <= chew_euclid) {
           worst_chew_euclid = chew_euclid;
           worstVerticesChew = getTextOutput();
-        } else {
-          // G.vList = copyList;
         }
-        if(worst_laub_dijkstra < laub_dijkstra) worst_laub_dijkstra = laub_dijkstra;
-        if(worst_chew_dijkstra < chew_dijkstra) worst_chew_dijkstra = chew_dijkstra;
+        if(worst_laub_dijkstra < laub_dijkstra)
+          worst_laub_dijkstra = laub_dijkstra;
+        if(worst_chew_dijkstra < chew_dijkstra)
+          worst_chew_dijkstra = chew_dijkstra;
       }
 
       System.out.println("WORST CASES");
@@ -210,7 +211,6 @@ public class ButtonFactory {
        try {
          BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
          writer.write(content);
-
          writer.close();
        } catch(Exception e) {}
      }
