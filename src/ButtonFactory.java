@@ -125,8 +125,8 @@ public class ButtonFactory {
         Button btn = new Button("Worst Case");
         btn.setOnAction(new EventHandler<ActionEvent>() {
           public void handle(ActionEvent event) {
-            // calculateWorstCase();
-            calculateStats();
+            calculateWorstCase();
+            // calculateStats();
           }
         });
         box.getChildren().add(btn);
