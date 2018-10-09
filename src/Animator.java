@@ -15,6 +15,14 @@ import javafx.scene.layout.Pane;
 
 import java.lang.Thread;
 
+/**
+ * Zeichnet Schritt für Schritt eine Queue von Animation-Elementen auf der GUI.
+ * Die Animator Klasse bekommt einzelne Elemente der Klasse Animation übergeben
+ * und kann diese nacheinander auf der GUI zeichnen.
+ * Die Klasse dient dazu, Linien, Kreise und Berechnungen der Algorithmen
+ * zu verdeutlichen und zu markieren.
+ */
+
 class Animator {
 
   private List<Animation> animations = new ArrayList<>();
@@ -23,19 +31,39 @@ class Animator {
   private VBox textbox;
   private double rate = 1;
 
+  /**
+   * @method Animator
+   * @param  Pane     layer         [description]
+   * @param  VBox     textbox       [description]
+   * @return          [description]
+   */
   public Animator(Pane layer, VBox textbox) {
     this.layer = layer;
     this.textbox = textbox;
   }
 
+
+  /**
+   * Fügt Animationselement zu Queue hinzu.
+   * @method addAnimation
+   * @param  Animation    animation [description]
+   */
   public void addAnimation(Animation animation) {
     animations.add(animation);
   }
 
+  /**
+   * Setzt die Animationen auf Anfangswert zurück.
+   * @method reset
+   */
   public void reset() {
     cursor = 0;
   }
 
+  /**
+   * Zeichnet das nächste Element in der Queue
+   * @method drawNext
+   */
   public void drawNext() {
     if(cursor < animations.size()) {
       Animation animation = animations.get(cursor);
@@ -47,6 +75,11 @@ class Animator {
     }
   }
 
+  /**
+   * Zeichnet ein Animationselement auf der GUI
+   * @method draw
+   * @param  Animation animation [description]
+   */
   private void draw(Animation animation) {
     Shape shape = animation.shape;
     int type = animation.type;

@@ -30,6 +30,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import java.net.MalformedURLException;
 
+
+/**
+ * Startet und initialisiert die GUI
+ */
 public class MainGui extends Application {
 
   public Graph G = new Graph();
@@ -78,6 +82,7 @@ public class MainGui extends Application {
     r.setWidth(800);
     r.setHeight(600);
     r.setFill(Color.color(0,0,0,0));
+
     r.setOnMousePressed(new EventHandler<MouseEvent>() {
       public void handle(MouseEvent event) {
         if(buttons.addOnClick()){
@@ -85,6 +90,7 @@ public class MainGui extends Application {
         }
       }
     });
+
     nodeLayer.getChildren().add(r);
   }
 
@@ -96,11 +102,13 @@ public class MainGui extends Application {
     node.setRadius(4.0);
     int position = G.vList.size();
     G.addVertex(new Vertex(x,y), calcTriang);
+
     if(position == 0){
       node.setFill(Color.LAWNGREEN);
     } else if (position == 1){
       node.setFill(Color.RED);
     }
+
     node.setOnMouseDragged(new EventHandler<MouseEvent>() {
       public void handle(MouseEvent event) {
         double deltaX = Math.abs(node.getCenterX() - event.getSceneX());
@@ -122,17 +130,8 @@ public class MainGui extends Application {
   }
 
   public void updateEdgesAndRoute() {
+
     edgeLayer.getChildren().clear();
-    // Vertex s = G.vList.get(0);
-    // Vertex t = G.vList.get(1);
-    // Circle node = new Circle();
-    // node.setCenterX(s.add(t).mult(0.5).x);
-    // node.setCenterY(s.add(t).mult(0.5).y);
-    // node.setRadius(s.distance(t) / 2);
-    // node.setFill(Color.color(0,0,0,0));
-    // node.setStrokeWidth(1);
-    // node.setStroke(Color.BLACK);
-    // edgeLayer.getChildren().add(node);
     for (Vertex v : G.V) {
       for (Vertex w : v.neighbours) {
         if(v.isHighway && w.isHighway){
@@ -145,7 +144,8 @@ public class MainGui extends Application {
         }
       }
     }
-    if(G.V.size() > 1){
+
+    if(G.V.size() > 1) {
       lengthinformationBox.getChildren().clear();
       topLayer.getChildren().clear();
       // G.setOnlineStrategy(new LaubStrategy(G.vList.get(0), G.vList.get(1), new Animator(topLayer)));
@@ -155,6 +155,7 @@ public class MainGui extends Application {
       IAlgorithm greed = new GreedyStrategy(G.vList.get(0), G.vList.get(1), new Animator(topLayer, animationinformationBox));
       IAlgorithm opt = new OptimalStrategy(G.vList.get(0), G.vList.get(1), new Animator(topLayer, animationinformationBox), G);
       IAlgorithm laub = new LaubStrategyAnimated(G.vList.get(0), G.vList.get(1), new Animator(topLayer, animationinformationBox));
+
       G.setOnlineStrategy(laub);
       buttons.setAnimator(laub.getAnimator());
       if(showAlg[0]) drawRoutingPath(G.route(), Color.VIOLET, 5, "Laub");
@@ -171,6 +172,7 @@ public class MainGui extends Application {
 
   public void drawRoutingPath(List<Vertex> path, Color c, int width, String name){
     double dist = 0.0;
+
     for(int i = 0; i < path.size() - 1; i++){
       dist += path.get(i).distance(path.get(i+1));
       Line line = new Line(path.get(i).x, path.get(i).y, path.get(i+1).x, path.get(i+1).y);
@@ -178,6 +180,7 @@ public class MainGui extends Application {
       line.setStrokeWidth(width);
       edgeLayer.getChildren().add(line);
     }
+
     Text algoName = new Text(name);
     algoName.setStroke(c);
     DecimalFormat decimalFormat = new DecimalFormat("#.000");
@@ -193,23 +196,28 @@ public class MainGui extends Application {
       public void handle(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
         File file = fileChooser.showOpenDialog(stage);
+
         if (file != null) {
           PointLoader loader = new PointLoader(file);
           nodeLayer.getChildren().clear();
           setupNodeLayer();
           G.clear();
           List<Vertex> newVertices = loader.getVertices();
+
           for(Vertex v : newVertices) {
             addNode(v.x, v.y, false);
           }
+
           G.calculateTriangulation();
           updateEdgesAndRoute();
         }
+
       }
     });
     buttons.addSaveFileButton(horizontalBox);
     buttons.addOnClickToggleButton(horizontalBox);
     buttons.addAnimationStepButton(horizontalBox);
+
     buttons.addButton(horizontalBox, "Random Set", new EventHandler<ActionEvent>() {
       public void handle(ActionEvent event) {
         if(generationCount < 50){
@@ -223,6 +231,7 @@ public class MainGui extends Application {
           double z = 0.2;
           addNode(20,300, false);
           addNode(680,300, false);
+
           for(int i = 0; i < 5; i++){
             for(int j = 0; j < 20; j++){
               // addNode(i*10,rand.nextInt(560)+20, false);
@@ -230,6 +239,7 @@ public class MainGui extends Application {
               z += 0.04;
             }
           }
+
           z = 0.2;
           double y = 4.2;
           for(int i = 0; i < 5; i++){
@@ -240,11 +250,13 @@ public class MainGui extends Application {
               z += 0.04;
             }
           }
+
         }
         G.calculateTriangulation();
         updateEdgesAndRoute();
       }
     });
+
     buttons.addButton(horizontalBox, "Clear", new EventHandler<ActionEvent>() {
       public void handle(ActionEvent event) {
         nodeLayer.getChildren().clear();
@@ -256,12 +268,14 @@ public class MainGui extends Application {
         setupNodeLayer();
       }
     });
+
     buttons.addButton(horizontalBox, "Set Highway", new EventHandler<ActionEvent>() {
       public void handle(ActionEvent event) {
         G.calculateHighway();
         updateEdgesAndRoute();
       }
     });
+
     Button btn = new Button("Show: 11111");
     btn.setOnAction(new EventHandler<ActionEvent>() {
       public void handle(ActionEvent event) {
@@ -269,15 +283,18 @@ public class MainGui extends Application {
         String showAlgNumString = Integer.toBinaryString(showAlgNum);
         btn.setText("Show: " + showAlgNumString);
         showAlg = new Boolean[]{false, false, false, false, false};
+
         for(int i = 0; i < showAlgNumString.length(); i++) {
           char c = showAlgNumString.charAt(i);
           if(c == "1".charAt(0)){
             showAlg[i] = true;
           }
         }
+
         updateEdgesAndRoute();
       }
     });
+
     horizontalBox.getChildren().add(btn);
     buttons.addWorstCaseButton(horizontalBox);
   }

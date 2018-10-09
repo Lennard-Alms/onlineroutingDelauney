@@ -2,6 +2,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.lang.Math;
 
+/**
+ * Implementierung der Laubenthalschen Heuristik zur Bestimmung eines Pfades von s nach t in einer Delaunay Triangulation
+ */
+
 class LaubStrategy implements IAlgorithm {
   protected Animator animator;
   protected Vertex start = null;
@@ -59,6 +63,15 @@ class LaubStrategy implements IAlgorithm {
     return bestVertex;
   }
 
+  /**
+   * Bewertet eine Kante (current, v) mit einer Zahl (score).<br>
+   * Eine besonders kleine Zahl im Vergleich zu anderen vergleichbaren Kanten heißt,
+   * dass es sich um eine gut bewertete Kante handelt.
+   * @method calculateScore
+   * @param  Vertex         current       Aktuelle Position im Graphen
+   * @param  Vertex         v             Benachbarter Punkt von current
+   * @return                [description]
+   */
   protected double calculateScore(Vertex current, Vertex v) {
     double angle = Geometry.calculateAngle(v, target, current) / 90;
     Vertex v_t = v.sub(target);

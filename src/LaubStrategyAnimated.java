@@ -3,6 +3,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.lang.Math;
 
+/**
+ * Erweitert die Klasse LaubStrategy mit der Funktionalität, die Berechnungen der einzelnen Schritte
+ * grafisch auf der GUI darzustellen.<br>
+ * Dafür wird ein {@link Animator} mit {@link Animation}-Objekten gefüllt, die später schrittweise abgespielt werden können.
+ */
+
 class LaubStrategyAnimated extends LaubStrategy {
 
   public LaubStrategyAnimated(Vertex s, Vertex t, Animator animator) {

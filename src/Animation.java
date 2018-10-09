@@ -6,6 +6,9 @@ import javafx.scene.paint.Color;
 
 import javafx.scene.layout.Pane;
 
+/**
+ * Ein Element, welches auf der GUI gezeichnet werden kann. Zum Beispiel Kreis, Linie, Text etc.
+ */
 
 class Animation {
   private String classname;

@@ -2,6 +2,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.lang.Math;
 
+/**
+ * Implementierung der Greedy Heuristik zur Bestimmung eines Pfades von s nach t in einer Delaunay Triangulation
+ */
+
 class GreedyStrategy implements IAlgorithm {
   protected Animator animator;
   protected Vertex start = null;

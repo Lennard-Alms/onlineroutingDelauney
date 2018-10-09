@@ -13,6 +13,10 @@ import java.util.ArrayList;
 import java.util.Set;
 import javafx.scene.layout.VBox;
 
+/**
+ * Enthält alle Buttons und deren Hauptfunktionalität
+ */
+
 public class ButtonFactory {
     Stage stage = null;
     Boolean addOnClick = true;
@@ -38,6 +42,9 @@ public class ButtonFactory {
         box.getChildren().add(btn);
     }
 
+    /**
+     * Spielt Animationen Schritt für Schritt ab.
+     */
     public void addAnimationStepButton(Pane box) {
         Button btn = new Button("Animate");
         btn.setOnAction(new EventHandler<ActionEvent>() {
@@ -48,6 +55,9 @@ public class ButtonFactory {
         box.getChildren().add(btn);
     }
 
+    /**
+     * Aktiviert / Deaktiviert das Hinzufügen neuer Knoten
+     */
     public void addOnClickToggleButton(Pane box) {
         Button btn = new Button("No new Nodes");
         btn.setOnAction(new EventHandler<ActionEvent>() {
@@ -64,7 +74,9 @@ public class ButtonFactory {
         box.getChildren().add(btn);
     }
 
-
+    /**
+     * Speichert aktuelle Punktemenge in einer Datei ab
+     */
     public void addSaveFileButton(Pane box) {
         Button btn = new Button("Save file...");
         btn.setOnAction(new EventHandler<ActionEvent>() {
@@ -76,7 +88,7 @@ public class ButtonFactory {
             }
           }
         });
-    box.getChildren().add(btn);
+        box.getChildren().add(btn);
     }
 
     public void saveFile(String content, File file) {
@@ -85,7 +97,7 @@ public class ButtonFactory {
           fileWriter = new FileWriter(file);
           fileWriter.write(content);
           fileWriter.close();
-        } catch (IOException ex) {
+        } catch (IOException e) {
         }
     }
 
@@ -106,9 +118,9 @@ public class ButtonFactory {
         return output;
     }
 
-
-
-
+    /**
+     * Berechnet den Worst Case und Statistiken
+     */
     public void addWorstCaseButton(Pane box){
         Button btn = new Button("Worst Case");
         btn.setOnAction(new EventHandler<ActionEvent>() {
@@ -120,7 +132,9 @@ public class ButtonFactory {
         box.getChildren().add(btn);
     }
 
-
+    /**
+     * Berechnung des Worst Case durch hohe Anzahl von zufälligen Punktemengen
+     */
     public void calculateWorstCase() {
 
       Random rand = new Random();
@@ -207,6 +221,7 @@ public class ButtonFactory {
 
       saveWorstFile(worstVerticesChew, "worstcase_chew.graph");
     }
+
     public void saveWorstFile(String content, String filename) {
        try {
          BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
@@ -217,7 +232,9 @@ public class ButtonFactory {
 
 
 
-
+     /**
+      * Berechnung von Statistiken durch hohe Anzahl von randomisierten Punktemengen.<br>
+      */
      public void calculateStats() {
          Random rand = new Random();
          for(int z = 1; z < 2; z++){

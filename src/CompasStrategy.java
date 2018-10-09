@@ -2,6 +2,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.lang.Math;
 
+/**
+ * Implementierung des Compass Routings auf einer Delauney Triangulation.
+ */
+
 class CompasStrategy implements IAlgorithm {
   protected Animator animator;
   protected Vertex start = null;

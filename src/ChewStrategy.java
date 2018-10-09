@@ -2,13 +2,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.lang.Math;
 
+/**
+ * Routing Strategie für Chew's Algorithmus
+ */
+
 class ChewStrategy implements IAlgorithm {
   protected Animator animator;
   protected Vertex start = null;
   protected Vertex target = null;
 
+  /**
+   * Konstruktor
+   * @method ChewStrategy
+   */
   public ChewStrategy() {}
 
+  /**
+   * Konstruktor
+   * @method ChewStrategy
+   * @param  Vertex       s             Start Knoten
+   * @param  Vertex       t             Target Knoten
+   * @param  Animator     animator      Animator Objekt um Animationen zu speichern
+   */
   public ChewStrategy(Vertex s, Vertex t, Animator animator) {
     setStart(s);
     setTarget(t);
@@ -31,6 +46,11 @@ class ChewStrategy implements IAlgorithm {
     return animator;
   }
 
+  /**
+   * Führt eine komplette Pfadberechnung von start zu target aus.
+   * @method run
+   * @return [description]
+   */
   public List<Vertex> run() {
     List<Vertex> path = new ArrayList<>();
     Vertex current = start;
@@ -44,20 +64,36 @@ class ChewStrategy implements IAlgorithm {
     return path;
   }
 
+  /**
+   * Führt die Berechnung des nächsten Pfadsegments mit current als Startknoten durch.
+   * @method step
+   * @param  Vertex current       Knoten, der die aktuelle Position beschreibt.
+   * @return                      Nächster Knoten auf dem Pfad
+   */
   public Vertex step(Vertex current) {
     Vertex x = null;
     Vertex y = null;
+
+    /**
+     * Berechnet für alle Nachbarknoten, ob diese sich schneiden und prüft,
+     * ob es sich bei den Knoten um das rechteste Dreieck nach Chew's Algorithmus handelt,
+     * welches mit der Geraden von start nach target einen Schnittpunkt hat.
+     */
     for(Vertex v : current.nList) {
       if(v.equals(target)) {
         return target;
       }
       for(Vertex w : current.nList) {
         if(v.neighbours.contains(w)) {
-          if(intersects(start,target,v,w)) {
+          if(intersects(start, target, v, w)) {
+            /**
+             * Prüfe ob es sich um das rechteste Dreieck handelt.
+             */
             if(x == null) {
               x = v;
               y = w;
-            } else if(Geometry.getDistanceFromPointToIntersection(start,target,x,y) < Geometry.getDistanceFromPointToIntersection(start,target,v,w)) {
+            } else if (Geometry.getDistanceFromPointToIntersection(start, target, x, y) <
+                      Geometry.getDistanceFromPointToIntersection(start, target, v, w)) {
               x = v;
               y = w;
             }
@@ -65,6 +101,12 @@ class ChewStrategy implements IAlgorithm {
         }
       }
     }
+
+    /**
+     * Wenn 2 Knoten x, y gefunden wurden, für die obige Eigenschaft gilt:
+     *  Berechne Kreis um die 3 Punkte current, x, y
+     *  Prüfe, ob x oder y das nächste Pfadsegment auf der Route ist.
+     */
     if(x != null && y != null) {
       Vertex cc = GetCircumcenter(current, x, y);
       Vertex leftmost = cc.add(start.sub(target).mult(1/start.sub(target).mag()).mult(cc.distance(current)));
@@ -87,7 +129,18 @@ class ChewStrategy implements IAlgorithm {
     }
   }
 
-  public Vertex findRightIntersect(Vertex s, Vertex t, Vertex cc, Vertex current) {
+    /**
+     * Berechnet den rechten Schnittpunkt zwischen einem Kreis und der Geraden von s nach t
+     * "Rechter Schnittpunkt" heißt, dass der Schnittpunkt, der projiziert auf die Gerade von s nach t
+     * näher an t liegt, gewählt wird.
+     * @method findRightIntersect
+     * @param  Vertex             s             Start Knoten
+     * @param  Vertex             t             Target Knoten
+     * @param  Vertex             cc            Circumcenter
+     * @param  Vertex             current       Aktuelle Position
+     * @return
+     */
+    public Vertex findRightIntersect(Vertex s, Vertex t, Vertex cc, Vertex current) {
         Vertex sToT = t.sub(s);
         Vertex sToCC = cc.sub(s);
         double cp = sToCC.dot(sToT)/sToT.dot(sToT);

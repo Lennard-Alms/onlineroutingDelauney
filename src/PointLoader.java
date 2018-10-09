@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.HashSet;
 
+/**
+ * Schnittstelle zum Einlesen von Punktmengen aus einer Datei
+ */
 
 public class PointLoader {
 
