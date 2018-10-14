@@ -59,7 +59,7 @@ class LaubStrategy implements IAlgorithm {
     return bestVertex;
   }
 
-  protected double calculateScore(Vertex current, Vertex v) {
+  public double calculateScore(Vertex current, Vertex v) {
     double angle = Geometry.calculateAngle(v, target, current) / 90;
     Vertex v_t = v.sub(target);
     return Math.pow(angle,3) * v_t.mag() * current.distance(v);

@@ -9,7 +9,7 @@ class LaubStrategyAnimated extends LaubStrategy {
     super(s, t, animator);
   }
 
-  protected double calculateScore(Vertex current, Vertex v) {
+  public double calculateScore(Vertex current, Vertex v) {
 
     double score = super.calculateScore(current, v);
 

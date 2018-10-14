@@ -138,7 +138,7 @@ public class MainGui extends Application {
         if(v.isHighway && w.isHighway){
           Line highwayEdge = new Line(v.x, v.y, w.x, w.y);
           highwayEdge.setStroke(Color.ORANGE);
-          highwayEdge.setStrokeWidth(6);
+          highwayEdge.setStrokeWidth(10);
           edgeLayer.getChildren().add(highwayEdge);
         } else {
           edgeLayer.getChildren().add(new Line(v.x, v.y, w.x, w.y));
@@ -165,7 +165,7 @@ public class MainGui extends Application {
       G.setOnlineStrategy(comp);
       if(showAlg[3]) drawRoutingPath(G.route(), Color.GOLD, 2, "Compas");
       G.setOnlineStrategy(chew);
-      if(showAlg[4]) drawRoutingPath(G.route(), Color.RED, 1, "Chew");
+      if(showAlg[4]) drawRoutingPath(G.route(), Color.RED, 4, "Chew");
     }
   }
 
@@ -217,29 +217,26 @@ public class MainGui extends Application {
           nodeLayer.getChildren().clear();
           setupNodeLayer();
           G.clear();
+          addNode(200,300, false);
+          addNode(600,300, false);
           Random rand = new Random();
-          // addNode(400,20, false);
-          // addNode(400,580, false);
-          double z = 0.2;
-          addNode(20,300, false);
-          addNode(680,300, false);
-          for(int i = 0; i < 5; i++){
-            for(int j = 0; j < 20; j++){
-              // addNode(i*10,rand.nextInt(560)+20, false);
-              addNode(40 + i*20*z, 200 + j*2*z, false);
-              z += 0.04;
+          LaubStrategy laub = new LaubStrategy(G.vList.get(0), G.vList.get(1), new Animator(topLayer, animationinformationBox));
+          for(int x = 0; x < 800; x++) {
+            for(int y = 0; y < 600; y++) {
+                double score = laub.calculateScore(G.vList.get(0), new Vertex(x,y));
+                float fscore = (float)score;
+                float red = fscore < 8000 ? Math.min((fscore) / 30, 255) : 255;
+                float blue = 0; //fscore < 2000 ? 255 - Math.min((fscore - 2000) / 9, 255) : 0;
+                float green = fscore > 8000 ? 255 - Math.min((fscore - 8000) / 240, 255) : 255;
+                Circle node = new Circle();
+                node.setCenterX(x);
+                node.setCenterY(y);
+                node.setRadius(1.0);
+                node.setFill(Color.color(red/255, green/255, blue/255));
+                nodeLayer.getChildren().add(node);
             }
           }
-          z = 0.2;
-          double y = 4.2;
-          for(int i = 0; i < 5; i++){
-            for(int j = 0; j < 20; j++){
-              // addNode(i*10,rand.nextInt(560)+20, false);
-              addNode(440 + i*20*z, 200 + j*2*y, false);
-              y -= 0.02;
-              z += 0.04;
-            }
-          }
+
         }
         G.calculateTriangulation();
         updateEdgesAndRoute();
@@ -259,6 +256,12 @@ public class MainGui extends Application {
     buttons.addButton(horizontalBox, "Set Highway", new EventHandler<ActionEvent>() {
       public void handle(ActionEvent event) {
         G.calculateHighway();
+        updateEdgesAndRoute();
+      }
+    });
+    buttons.addButton(horizontalBox, "LHFF", new EventHandler<ActionEvent>() {
+      public void handle(ActionEvent event) {
+        G.setHighway(G.vList.get(2),G.vList.get(3));
         updateEdgesAndRoute();
       }
     });
